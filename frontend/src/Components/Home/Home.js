@@ -6,110 +6,17 @@ import caurosel1 from '../utils/caurosel1.png';
 import caurosel2 from '../utils/caurosel2.png';
 import caurosel4 from '../utils/caurosel4.png';
 import Footer from './Footer';
+import Caurosel from './Caurosel';
+import Features from './Features';
 
 const Home = () => {
   return (
     <div>
       <Header />
-      <div className='w-full min-h-[90vh] flex justify-center items-center mt-20'>
-        <Carousel 
-          showThumbs={false} 
-          autoPlay 
-          infiniteLoop 
-          interval={2000} 
-          showStatus={false} 
-          className="w-full"
-        >
-          {/* Slide 1 */}
-          <div className="flex flex-col md:flex-row items-center justify-between p-3">
-            <div className="text-left md:w-1/3">
-              <h2 className="text-5xl font-bold mb-4 ml-10">Gain Control | Tame Costs | Boost Revenues</h2>
-              <p className="text-2xl ml-10">
-                Optimize Inventory Management & Maximize Stock Efficiency. In today's competitive world, tracking inventory with an end-to-end view is key for any business to ensure sustained growth and profitability.
-              </p>
-            </div>
-            <div className="flex justify-center md:w-1/2">
-              <img src={caurosel1} alt="Inventory Management" />
-            </div>
-          </div>
-          
-          {/* Slide 2 */}
-          <div className="flex flex-col md:flex-row items-center justify-between p-3">
-            <div className="text-left md:w-1/3 p-3">
-              <h2 className="text-5xl font-bold mb-4 ml-10">Streamline Operations</h2>
-              <p className="text-2xl ml-10">
-                Automate, track, and maintain the supply chain, running it like well-oiled machinery for optimal inventory levels with key insights and forecasts available in real-time.
-              </p>
-            </div>
-            <div className="flex justify-center md:w-1/2">
-              <img src={caurosel2} alt="Supply Chain Management" />
-            </div>
-          </div>
+      <Caurosel />
+      <Features />
 
-          {/* Slide 3 */}
-          <div className="flex flex-col md:flex-row items-center justify-between p-3">
-            <div className="text-left md:w-1/3 p-3">
-              <h2 className="text-5xl font-bold mb-4 ml-10">Enhance Visibility</h2>
-              <p className="text-2xl ml-10">
-                Enhance visibility into your inventory and supply chain operations, and make data-driven decisions with real-time insights and analytics.
-              </p>
-            </div>
-            <div className="flex justify-center md:w-1/2">
-              <img src={caurosel4} alt="Visibility Enhancement" />
-            </div>
-          </div>
-        </Carousel>
-      </div>
-
-      {/* New UI Section Below Carousel */}
-      <div className='w-full py-10 bg-gray-50'>
-        <div className='max-w-7xl mx-auto px-4'>
-          <h2 className="text-4xl font-bold text-center mb-8">Key Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Card 1 */}
-            <div className="flex flex-col items-center text-center p-6 bg-white shadow-md rounded-lg">
-              <img src={caurosel1} alt="Speed Up Orders" className="w-16 h-16 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Simplify & Speed-Up Orders</h3>
-              <p className="text-gray-700">Save time & automate reconciliation.</p>
-            </div>
-            
-            {/* Card 2 */}
-            <div className="flex flex-col items-center text-center p-6 bg-white shadow-md rounded-lg">
-              <img src={caurosel2} alt="Minimize Stock-Outs" className="w-16 h-16 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Minimize Stock-Outs</h3>
-              <p className="text-gray-700">Easily manage multiple Cost & Profit Centers through dimensions.</p>
-            </div>
-            
-            {/* Card 3 */}
-            <div className="flex flex-col items-center text-center p-6 bg-white shadow-md rounded-lg">
-              <img src={caurosel4} alt="Reduce Excess Inventory" className="w-16 h-16 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Reduce Excess Inventory</h3>
-              <p className="text-gray-700">Easily control billing and forecast upcoming payments.</p>
-            </div>
-            
-            {/* Card 4 */}
-            <div className="flex flex-col items-center text-center p-6 bg-white shadow-md rounded-lg">
-              <img src={caurosel4} alt="Focus On What Matters" className="w-16 h-16 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Focus On What Matters</h3>
-              <p className="text-gray-700">Focus your attention and capital on items that are more profitable.</p>
-            </div>
-
-            {/* Card 5 */}
-            <div className="flex flex-col items-center text-center p-6 bg-white shadow-md rounded-lg">
-              <img src={caurosel1} alt="Easily Forecast & Plan" className="w-16 h-16 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Easily Forecast & Plan</h3>
-              <p className="text-gray-700">Generate forecasts based on performance to plan better.</p>
-            </div>
-
-            {/* Card 6 */}
-            <div className="flex flex-col items-center text-center p-6 bg-white shadow-md rounded-lg">
-              <img src={caurosel2} alt="Seamless Integration" className="w-16 h-16 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Seamless Integration</h3>
-              <p className="text-gray-700">Seamless information flow across departments to achieve greater efficiency and cost-effectiveness.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      
 
       {/* Additional UI Section */}
       <div className='w-full py-10 bg-gray-100'>
