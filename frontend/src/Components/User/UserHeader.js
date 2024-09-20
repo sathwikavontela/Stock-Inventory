@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Stocklogo from '../utils/Stocklogo.png'
+
 const UserHeader = () => {
   return (
-    <div className="bg-[#8d2ac2] p-1" >
+    <div className="bg-[#8d2ac2] p-1 fixed top-0 left-0 w-full z-10">
       <div className="flex justify-between items-center">
         <img
           src={Stocklogo}
@@ -11,7 +12,7 @@ const UserHeader = () => {
           className="NavLogo w-16 h-16"
         />
         <ul className="flex space-x-6 text-white px-8">
-          <Link to="/user-Home">
+          <Link to="/user-home">
             <li className="text-xl">Home</li>
           </Link>
 

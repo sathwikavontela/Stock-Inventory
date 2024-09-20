@@ -1,18 +1,17 @@
-import React from 'react';
-import UserHeader from './UserHeader';
-import UserSidebar from './UserSidebar';
-import UserBody from './UserBody';
+import React from 'react'
+import UserHeader from './UserHeader'
+import UserSidebar from './UserSidebar'
 
 const UserHome = () => {
   return (
     <div>
       <UserHeader />
-      <div className="flex">
+      <div className="pt-16 h-[100vh] flex">
         <UserSidebar />
-        <UserBody />
+        <div className="p-4"> </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UserHome;
+export default UserHome
