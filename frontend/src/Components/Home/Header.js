@@ -4,7 +4,7 @@ import Stocklogo from '../utils/Stocklogo.png'
 
 const Header = () => {
   return (
-    <div className="bg-[#8d2ac2] p-1 fixed w-full z-10 top-0 ">
+    <div className="bg-[#8d2ac2] p-1 fixed w-full z-10 top-0">
       <div className="flex justify-between items-center">
         <img
           src={Stocklogo}
