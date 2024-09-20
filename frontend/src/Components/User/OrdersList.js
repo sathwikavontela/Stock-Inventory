@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import orderData from './RequestData.json' // Adjust the path as necessary
+import orderData from './RequestData.json';
 
 const OrdersList = () => {
   const [orders, setOrders] = useState(orderData)
@@ -96,7 +96,6 @@ const OrdersList = () => {
         </table>
       </div>
 
-      {/* Pagination Controls */}
       <div className="flex justify-between mt-4">
         <button
           onClick={handlePrev}
@@ -129,4 +128,4 @@ const OrdersList = () => {
   )
 }
 
-export default OrdersList
+export default OrdersList;

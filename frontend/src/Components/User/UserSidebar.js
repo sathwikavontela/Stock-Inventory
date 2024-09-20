@@ -15,7 +15,7 @@ const UserSidebar = () => {
           <Link to="/reports">Reports</Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded">
-          <Link to="/returns">Returns</Link>
+          <Link to="/user-returnform">Returns</Link>
         </li>
       </ul>
     </div>

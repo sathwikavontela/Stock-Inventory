@@ -1,0 +1,99 @@
+[
+    {
+      "id": 1,
+      "dept_name": "HR",
+      "item_name": "Office Supplies",
+      "item_quantity": 10,
+      "requested_date": "2023-09-01",
+      "status": "accepted"
+    },
+    {
+      "id": 2,
+      "dept_name": "Finance",
+      "item_name": "Laptops",
+      "item_quantity": 5,
+      "requested_date": "2023-09-02",
+      "status": "pending"
+    },
+    {
+      "id": 3,
+      "dept_name": "Marketing",
+      "item_name": "Cameras",
+      "item_quantity": 3,
+      "requested_date": "2023-09-03",
+      "status": "rejected"
+    },
+    {
+      "id": 4,
+      "dept_name": "Sales",
+      "item_name": "Printers",
+      "item_quantity": 7,
+      "requested_date": "2023-09-04",
+      "status": "pending"
+    },
+    {
+      "id": 5,
+      "dept_name": "IT",
+      "item_name": "Monitors",
+      "item_quantity": 15,
+      "requested_date": "2023-09-05",
+      "status": "accepted"
+    },
+    {
+      "id": 6,
+      "dept_name": "IT",
+      "item_name": "Monitors",
+      "item_quantity": 15,
+      "requested_date": "2023-09-05",
+      "status": "accepted"
+    },
+    {
+      "id": 7,
+      "dept_name": "IT",
+      "item_name": "Monitors",
+      "item_quantity": 15,
+      "requested_date": "2023-09-05",
+      "status": "accepted"
+    },
+    {
+      "id": 8,
+      "dept_name": "IT",
+      "item_name": "Monitors",
+      "item_quantity": 15,
+      "requested_date": "2023-09-05",
+      "status": "accepted"
+    },
+    {
+      "id": 9,
+      "dept_name": "IT",
+      "item_name": "Monitors",
+      "item_quantity": 15,
+      "requested_date": "2023-09-05",
+      "status": "accepted"
+    },
+    {
+      "id": 10,
+      "dept_name": "IT",
+      "item_name": "Monitors",
+      "item_quantity": 15,
+      "requested_date": "2023-09-05",
+      "status": "accepted"
+    },
+    {
+      "id": 11,
+      "dept_name": "IT",
+      "item_name": "Monitors",
+      "item_quantity": 15,
+      "requested_date": "2023-09-05",
+      "status": "accepted"
+    },
+    {
+      "id": 12,
+      "dept_name": "IT",
+      "item_name": "Monitors",
+      "item_quantity": 15,
+      "requested_date": "2023-09-05",
+      "status": "accepted"
+    }
+]
+  
