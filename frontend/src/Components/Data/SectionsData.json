@@ -1,0 +1,51 @@
+[
+    {
+      "id": 1,
+      "name": "CSE",
+      "image": "https://example.com/cse-dept.jpg",
+      "pendingRequests": 3,
+      "requests": [
+        { "id": 1, "title": "Request 1", "details": "Details of request 1" },
+        { "id": 2, "title": "Request 2", "details": "Details of request 2" }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "ECE",
+      "image": "https://example.com/ece-dept.jpg",
+      "pendingRequests": 5,
+      "requests": [
+        { "id": 1, "title": "Request 1", "details": "Details of request 1" },
+        { "id": 2, "title": "Request 2", "details": "Details of request 2" }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Civil",
+      "image": "https://example.com/civil-dept.jpg",
+      "pendingRequests": 2,
+      "requests": []
+    },
+    {
+      "id": 4,
+      "name": "EEE",
+      "image": "https://example.com/eee-dept.jpg",
+      "pendingRequests": 1,
+      "requests": []
+    },
+    {
+      "id": 5,
+      "name": "Mechanical",
+      "image": "https://example.com/mechanical-dept.jpg",
+      "pendingRequests": 4,
+      "requests": []
+    },
+    {
+      "id": 6,
+      "name": "Chief Warden",
+      "image": "https://example.com/warden-dept.jpg",
+      "pendingRequests": 6,
+      "requests": []
+    }
+  ]
+  
