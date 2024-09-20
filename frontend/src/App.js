@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './Components/Home/Home'
+import UserHome from './Components/User/UserHome'
 const Applayout = () => {
   return (
     <div>
@@ -16,6 +17,10 @@ const appRouter = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
+      },
+      {
+        path: '/user-Home',
+        element: <UserHome />,
       },
     ],
   },

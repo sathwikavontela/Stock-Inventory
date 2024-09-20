@@ -1,27 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Stocklogo from '../utils/Stocklogo.png'
-
-const Header = () => {
+const UserHeader = () => {
   return (
-    <div className="bg-[#8d2ac2] p-1">
+    <div className="bg-[#8d2ac2] p-1 ">
       <div className="flex justify-between items-center">
         <img
           src={Stocklogo}
-          alt="stock-inventory-main-logo"
-          className="NavLogo w-20 h-20"
+          alt="user-navbar-logo"
+          className="NavLogo w-16 h-16"
         />
         <ul className="flex space-x-6 text-white px-8">
-          <Link to="/">
+          <Link to="/user-Home">
             <li className="text-xl">Home</li>
           </Link>
 
-          <Link to="/about-us">
-            <li className="text-xl">About Us</li>
-          </Link>
-
-          <Link to="/login">
-            <li className="text-xl">Login</li>
+          <Link to="/logout">
+            <li className="text-xl">Logout</li>
           </Link>
         </ul>
       </div>
@@ -29,4 +24,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default UserHeader
