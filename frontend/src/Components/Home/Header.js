@@ -20,9 +20,6 @@ const Header = () => {
             <li className="text-xl">About Us</li>
           </Link>
 
-          <Link to="/request">
-            <li className="text-xl">Request</li>
-          </Link>
 
           <Link to="/login">
             <li className="text-xl">Login</li>
