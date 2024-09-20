@@ -15,6 +15,9 @@ const FICHeader = () => {
           <Link to="/fic-home">
             <li className="text-xl">Home</li>
           </Link>
+          <Link to="/user-home">
+            <li className="text-xl">Reports</li>
+          </Link>
 
           <Link to="/logout">
             <li className="text-xl">Logout</li>

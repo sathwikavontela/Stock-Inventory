@@ -9,6 +9,7 @@ import Orders from './Components/User/Orders'
 import Reports from './Components/User/Reports'
 import ContactUs from './Components/Contact/ContactUs'
 import FicHome from './Components/FIC/FicHome'
+import FICDept from './Components/FIC/FICDept'
 
 const Applayout = () => {
   return (
@@ -57,6 +58,10 @@ const appRouter = createBrowserRouter([
       {
         path: '/fic-home',
         element: <FicHome />,
+      },
+      {
+        path: '/fic-reports',
+        element: <FICDept />,
       },
     ],
   },
