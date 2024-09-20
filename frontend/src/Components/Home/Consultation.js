@@ -1,4 +1,4 @@
-
+import { Link } from "react-router-dom"
 
 const Consultation = () =>{
     return (
@@ -12,7 +12,9 @@ const Consultation = () =>{
             Call us today and schedule a demo to see how Edge ERP can help your business grow!
           </p>
           <div className="flex justify-center space-x-6">
-            <button className="bg-orange-500 text-black-600 px-6 py-3 rounded-lg font-semibold">Contact Us</button>
+            <Link to='/contact-us'>
+              <button className="bg-orange-500 text-black-600 px-6 py-3 rounded-lg font-semibold">Contact Us</button>
+            </Link>
             <button className="bg-orange-500 text-black-600 px-6 py-3 rounded-lg font-semibold">Take a Tour</button>
           </div>
         </div>
