@@ -63,6 +63,8 @@ const searchProducts = (query) => {
           <p className="text-gray-500">No items available.</p>
         )}
       </div>
+
+      
     </div>
   );
 };
