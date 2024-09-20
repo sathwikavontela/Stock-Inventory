@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './Components/Home/Home'
 import UserHome from './Components/User/UserHome'
 import Orders from './Components/User/Orders'
+import Reports from './Components/User/Reports'
 const Applayout = () => {
   return (
     <div>
@@ -26,6 +27,10 @@ const appRouter = createBrowserRouter([
       {
         path: '/orders',
         element: <Orders />,
+      },
+      {
+        path: '/reports',
+        element: <Reports />,
       },
     ],
   },

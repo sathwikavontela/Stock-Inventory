@@ -1,7 +1,6 @@
 import React from 'react'
 import UserHeader from './UserHeader'
 import UserSidebar from './UserSidebar'
-import UserBody from './UserBody'
 
 const UserHome = () => {
   return (

@@ -1,9 +1,9 @@
 import React from 'react'
 import UserHeader from './UserHeader'
 import UserSidebar from './UserSidebar'
-import OrdersList from './OrdersList'
+import UserReports from './UserReports'
 
-const Orders = () => {
+const Reports = () => {
   return (
     <div>
       <UserHeader />
@@ -11,11 +11,11 @@ const Orders = () => {
         <UserSidebar />
         <div className="px-4 w-[90vw] h-full overflow-y-auto">
           {/* Set the height and enable vertical scrolling */}
-          <OrdersList />
+          <UserReports />
         </div>
       </div>
     </div>
   )
 }
 
-export default Orders
+export default Reports
