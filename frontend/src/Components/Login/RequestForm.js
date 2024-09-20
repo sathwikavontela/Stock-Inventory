@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Header from '../Home/Header';
 
 const RequestForm = () => {
   const [item, setItem] = useState('');
@@ -27,6 +28,8 @@ const RequestForm = () => {
   };
 
   return (
+    <>
+    <Header />
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center mb-6 text-[#b14ae8]">
@@ -94,7 +97,8 @@ const RequestForm = () => {
           Submit Request
         </button>
       </form>
-    </div>
+      </div>
+      </>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import LoginImage from '../utils/LogImg.png'
+import Header from '../Home/Header';
 
 
 const LoginSignup = () => {
@@ -13,6 +14,8 @@ const LoginSignup = () => {
   };
 
   return (
+    <>
+      <Header />
     <div className="flex min-h-screen bg-white">
       <div className="w-1/2 flex items-center justify-center">
         <img 
@@ -68,7 +71,8 @@ const LoginSignup = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      </>
   );
 };
 
