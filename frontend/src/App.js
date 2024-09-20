@@ -10,6 +10,7 @@ import Reports from './Components/User/Reports'
 import ContactUs from './Components/Contact/ContactUs'
 import FicHome from './Components/FIC/FicHome'
 import FICDept from './Components/FIC/FICDept'
+import ReturnForm from './Components/Login/ReturnForm'
 
 const Applayout = () => {
   return (
@@ -50,6 +51,10 @@ const appRouter = createBrowserRouter([
       {
         path: '/user-Home',
         element: <UserHome />,
+      },
+      {
+        path: '/user-returnform',
+        element: <ReturnForm />,
       },
       {
         path: '/contact-us',
