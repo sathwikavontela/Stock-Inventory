@@ -32,7 +32,7 @@ const RequestForm = () => {
     <>
       <UserHeader />
       <div className="pt-16 h-[100vh] flex">
-        <UserSidebar className="fixed" />
+        <UserSidebar className="fixed " />
 
         <div className="flex justify-center items-center flex-grow">
           <form

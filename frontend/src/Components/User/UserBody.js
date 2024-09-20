@@ -42,14 +42,15 @@ const searchProducts = (query) => {
   return (
     <div className="p-6">
       {/* Search Bar */}
-      <div className="mb-4">
+      <div className="mb-4 flex justify-center ">
         <input
           type="text"
           placeholder="Search for items..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="w-1/2 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 transition duration-200 ease-in-out"
+          className="w-1/2 p-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-600 transition duration-200 ease-in-out"
         />
+       
       </div>
 
       {/* Products Grid */}

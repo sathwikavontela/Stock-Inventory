@@ -2,7 +2,7 @@ import React from 'react';
 
 const InventoryCard = ({ item }) => {
   return (
-    <div className="p-4 shadow-md rounded-lg bg-white">
+    <div className="p-4 shadow-xl rounded-lg bg-gr">
       <img src={item.image} alt={item.name} className="w-full h-48 object-cover rounded-lg" />
       <div className="mt-4">
         <h2 className="text-lg font-bold">{item.name}</h2>

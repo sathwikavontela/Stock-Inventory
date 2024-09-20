@@ -27,7 +27,7 @@ const ReturnForm = () => {
         <UserSidebar className="fixed" />
 
         {/* Form Section */}
-        <div className="flex justify-center items-center flex-grow">
+        <div className="flex justify-center items-center flex-grow w-[88%]">
           <form
             onSubmit={handleSubmit}
             className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"

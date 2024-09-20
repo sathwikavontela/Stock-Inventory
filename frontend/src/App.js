@@ -13,6 +13,11 @@ import AuthorityOrder from './Components/Authority/AuthorityOrder'
 import FicHome from './Components/FIC/FicHome'
 import FICDept from './Components/FIC/FICDept'
 import ReturnForm from './Components/Login/ReturnForm'
+import FicHome from './Components/FIC/FicHome'
+import FICDept from './Components/FIC/FICDept'
+import ReturnForm from './Components/Login/ReturnForm'
+import AuthorityHome from './Components/Authority/AuthorityHome'
+import AuthorityOrder from './Components/Authority/AuthorityOrder'
 
 const Applayout = () => {
   return (
@@ -67,6 +72,7 @@ const appRouter = createBrowserRouter([
         element: <AuthorityOrder />,
       },
       {
+
         path: '/user-returnform',
         element: <ReturnForm />,
       },
