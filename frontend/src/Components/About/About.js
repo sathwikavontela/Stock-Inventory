@@ -12,13 +12,13 @@ const About = () => {
 
       <div className=" container mx-auto px-4 py-20 mt-10  md:flex-row items-center">
         <div className="md:w-1/2 z-20">
-          <h1 className="text-black text-5xl font-bold  mb-6">
+          <h1 className="text-black text-5xl font-bold pl-10  mb-6">
             Inventory Management Software System
           </h1>
-          <p className="text-black text-lg mb-6">
+          <p className="text-black text-lg pl-10 mb-6">
             Our inventory management software allows users to efficiently track the exact location and stock levels of your products in real-time.
           </p>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded">
+          <button className= " ml-10 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded">
             Schedule a Demo
           </button>
         </div>
