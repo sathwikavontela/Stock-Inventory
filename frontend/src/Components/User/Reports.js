@@ -11,6 +11,8 @@ const Reports = () => {
         <UserSidebar />
         <div className="px-4 w-[90vw] h-full overflow-y-auto w-[88%]">
           {/* Set the height and enable vertical scrolling */}
+
+          
           <UserReports />
         </div>
       </div>
