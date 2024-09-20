@@ -1,0 +1,86 @@
+[
+  {
+    "item_name": "Product A",
+    "item_quantity": 2,
+    "requested_date": "2023-09-01",
+    "approved_date": "2023-09-02",
+    "status": "accepted"
+  },
+  {
+    "item_name": "Product B",
+    "item_quantity": 5,
+    "requested_date": "2023-09-05",
+    "approved_date": null,
+    "status": "pending"
+  },
+  {
+    "item_name": "Product C",
+    "item_quantity": 1,
+    "requested_date": "2023-09-10",
+    "approved_date": "2023-09-11",
+    "status": "accepted"
+  },
+  {
+    "item_name": "Product D",
+    "item_quantity": 3,
+    "requested_date": "2023-09-12",
+    "approved_date": null,
+    "status": "pending"
+  },
+  {
+    "item_name": "Product E",
+    "item_quantity": 4,
+    "requested_date": "2023-09-15",
+    "approved_date": "2023-09-16",
+    "status": "rejected"
+  },
+  {
+    "item_name": "Product F",
+    "item_quantity": 2,
+    "requested_date": "2023-09-20",
+    "approved_date": "2023-09-21",
+    "status": "accepted"
+  },
+  {
+    "item_name": "Product A",
+    "item_quantity": 2,
+    "requested_date": "2023-09-01",
+    "approved_date": "2023-09-02",
+    "status": "accepted"
+  },
+  {
+    "item_name": "Product B",
+    "item_quantity": 5,
+    "requested_date": "2023-09-05",
+    "approved_date": null,
+    "status": "pending"
+  },
+  {
+    "item_name": "Product C",
+    "item_quantity": 1,
+    "requested_date": "2023-09-10",
+    "approved_date": "2023-09-11",
+    "status": "accepted"
+  },
+  {
+    "item_name": "Product D",
+    "item_quantity": 3,
+    "requested_date": "2023-09-12",
+    "approved_date": null,
+    "status": "pending"
+  },
+  {
+    "item_name": "Product E",
+    "item_quantity": 4,
+    "requested_date": "2023-09-15",
+    "approved_date": "2023-09-16",
+    "status": "rejected"
+  },
+  {
+    "item_name": "Product F",
+    "item_quantity": 2,
+    "requested_date": "2023-09-20",
+    "approved_date": "2023-09-21",
+    "status": "accepted"
+  }
+]
