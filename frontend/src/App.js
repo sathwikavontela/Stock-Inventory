@@ -8,6 +8,8 @@ import UserHome from './Components/User/UserHome'
 import Orders from './Components/User/Orders'
 import Reports from './Components/User/Reports'
 import ContactUs from './Components/Contact/ContactUs'
+import AuthorityHome from './Components/Authority/AuthorityHome'
+import AuthorityOrder from './Components/Authority/AuthorityOrder'
 
 const Applayout = () => {
   return (
@@ -53,7 +55,15 @@ const appRouter = createBrowserRouter([
       {
         path:'/contact-us',
         element :<ContactUs />
-      }
+      },
+      {
+        path:'/authority-home',
+        element :<AuthorityHome />
+      },
+      {
+        path: '/authority/authority-orders',
+        element: <AuthorityOrder />,
+      },
     ],
   },
 ])

@@ -40,4 +40,4 @@ const UserBody = () => {
   )
 }
 
-export default UserBody
+export default UserBody;
