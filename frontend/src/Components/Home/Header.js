@@ -11,7 +11,7 @@ const Header = () => {
           alt="stock-inventory-main-logo"
           className="NavLogo w-20 h-20"
         />
-        <ul className="flex space-x-6 text-white px-8  min-h-[50%]">
+        <ul className="flex space-x-6 text-white px-8  line-height-[50%]">
           <Link to="/">
             <li className="text-xl">Home</li>
           </Link>
