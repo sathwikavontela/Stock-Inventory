@@ -6,6 +6,7 @@ const FicHome = () => {
     <div>
       <FICHeader />
     </div>
+    
   )
 }
 

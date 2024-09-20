@@ -4,6 +4,7 @@ import Stocklogo from '../utils/Stocklogo.png'
 
 const FICHeader = () => {
   return (
+  
     <div className="bg-[#8d2ac2] p-1 fixed top-0 left-0 w-full z-10">
       <div className="flex justify-between items-center">
         <img
