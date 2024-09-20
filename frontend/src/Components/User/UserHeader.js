@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Stocklogo from '../utils/Stocklogo.png'
 const UserHeader = () => {
   return (
-    <div className="bg-[#8d2ac2] p-1 ">
+    <div className="bg-[#8d2ac2] p-1" >
       <div className="flex justify-between items-center">
         <img
           src={Stocklogo}
