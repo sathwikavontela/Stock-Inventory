@@ -1,6 +1,8 @@
 import caurosel1 from '../utils/caurosel1.png';
 import caurosel2 from '../utils/caurosel2.png';
 import caurosel4 from '../utils/caurosel4.png';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 const Caurosel = () => {
     return (
