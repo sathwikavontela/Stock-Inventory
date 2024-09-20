@@ -1,17 +1,20 @@
 import React from 'react'
 import UserHeader from './UserHeader'
 import UserSidebar from './UserSidebar'
+import OrdersList from './OrdersList'
 
-const UserHome = () => {
+const Orders = () => {
   return (
     <div>
       <UserHeader />
       <div className="pt-16 h-[100vh] flex">
         <UserSidebar />
-        <div className="p-4"> </div>
+        <div className="px-4 py-4">
+          <OrdersList />
+        </div>
       </div>
     </div>
   )
 }
 
-export default UserHome
+export default Orders

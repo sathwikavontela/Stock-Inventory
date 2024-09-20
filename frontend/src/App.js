@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './Components/Home/Home'
 import UserHome from './Components/User/UserHome'
+import Orders from './Components/User/Orders'
 const Applayout = () => {
   return (
     <div>
@@ -21,6 +22,10 @@ const appRouter = createBrowserRouter([
       {
         path: '/user-Home',
         element: <UserHome />,
+      },
+      {
+        path: '/orders',
+        element: <Orders />,
       },
     ],
   },
