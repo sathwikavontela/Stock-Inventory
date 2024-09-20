@@ -5,13 +5,13 @@ import Stocklogo from '../utils/Stocklogo.png'
 const Header = () => {
   return (
     <div className="bg-[#8d2ac2] p-1 fixed w-full z-10 top-0 h-[10%]  ">
-      <div className="flex justify-between items-center line-height-[50%]">
+      <div className="flex justify-between items-center h-full ">
         <img
           src={Stocklogo}
           alt="stock-inventory-main-logo"
-          className="NavLogo w-20 h-20"
+          className="w-[5%]"
         />
-        <ul className="flex space-x-6 text-white px-8  line-height-[50%]">
+        <ul className="flex space-x-6 text-white px-[2%]  line-height-[50%]">
           <Link to="/">
             <li className="text-xl">Home</li>
           </Link>
