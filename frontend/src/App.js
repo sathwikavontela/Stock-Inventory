@@ -7,6 +7,8 @@ import About from './Components/About/About'
 import UserHome from './Components/User/UserHome'
 import Orders from './Components/User/Orders'
 import Reports from './Components/User/Reports'
+import ContactUs from './Components/Contact/ContactUs'
+
 const Applayout = () => {
   return (
     <div>
@@ -47,6 +49,10 @@ const appRouter = createBrowserRouter([
       {
         path:'/user-Home',
         element :<UserHome />
+      },
+      {
+        path:'/contact-us',
+        element :<ContactUs />
       }
     ],
   },

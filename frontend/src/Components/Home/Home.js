@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import { Carousel } from 'react-responsive-carousel';
+import { BrowserRouter , Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import caurosel1 from '../utils/caurosel1.png';
 import caurosel2 from '../utils/caurosel2.png';
@@ -79,7 +80,9 @@ const Home = () => {
             Call us today and schedule a demo to see how Edge ERP can help your business grow!
           </p>
           <div className="flex justify-center space-x-6">
-            <button className="bg-orange-500 text-black-600 px-6 py-3 rounded-lg font-semibold">Contact Us</button>
+            <Link to="/contact-us" >
+              <button className="bg-orange-500 text-black-600 px-6 py-3 rounded-lg font-semibold">Contact Us</button>
+            </Link>
             <button className="bg-orange-500 text-black-600 px-6 py-3 rounded-lg font-semibold">Take a Tour</button>
           </div>
         </div>
