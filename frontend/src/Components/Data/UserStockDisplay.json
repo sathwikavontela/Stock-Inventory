@@ -1,0 +1,73 @@
+[
+    {
+      "id": 1,
+      "name": "Projector",
+      "description": "High-quality projector",
+      "isAvailable": true,
+      "image": "/images/projector.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Whiteboard",
+      "description": "Large whiteboard",
+      "isAvailable": false,
+      "image": "/images/whiteboard.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Laptop",
+      "description": "15-inch laptop",
+      "isAvailable": true,
+      "image": "/images/laptop.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Marker Set",
+      "description": "Pack of assorted markers",
+      "isAvailable": true,
+      "image": "/images/markers.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Sound System",
+      "description": "Wireless sound system for presentations",
+      "isAvailable": false,
+      "image": "/images/sound_system.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Laptop Stand",
+      "description": "Adjustable laptop stand",
+      "isAvailable": true,
+      "image": "/images/laptop_stand.jpg"
+    },
+    {
+      "id": 7,
+      "name": "HDMI Cable",
+      "description": "3-meter HDMI cable",
+      "isAvailable": true,
+      "image": "/images/hdmi_cable.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Office Chair",
+      "description": "Ergonomic office chair",
+      "isAvailable": true,
+      "image": "/images/office_chair.jpg"
+    },
+    {
+      "id": 9,
+      "name": "USB Hub",
+      "description": "4-port USB hub",
+      "isAvailable": true,
+      "image": "/images/usb_hub.jpg"
+    },
+    {
+      "id": 10,
+      "name": "Printer",
+      "description": "Color printer with wireless connectivity",
+      "isAvailable": false,
+      "image": "/images/printer.jpg"
+    }
+  ]
+  
