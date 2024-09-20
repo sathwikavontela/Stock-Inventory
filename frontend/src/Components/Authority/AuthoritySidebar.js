@@ -9,13 +9,13 @@ const UserSidebar = () => {
           <Link to="/requests">Requests</Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded">
-          <Link to="/orders">Orders</Link>
+          <Link to="/authority/authority-orders">Orders</Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded">
-          <Link to="/reports">Reports</Link>
+          <Link to="/authority/reports">Reports</Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded">
-          <Link to="/returns">Returns</Link>
+          <Link to="/authority/returns">Returns</Link>
         </li>
       </ul>
     </div>

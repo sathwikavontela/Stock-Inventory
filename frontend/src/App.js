@@ -8,6 +8,8 @@ import UserHome from './Components/User/UserHome'
 import Orders from './Components/User/Orders'
 import Reports from './Components/User/Reports'
 import ContactUs from './Components/Contact/ContactUs'
+import AuthorityHome from './Components/Authority/AuthorityHome'
+import AuthorityOrder from './Components/Authority/AuthorityOrder'
 import FicHome from './Components/FIC/FicHome'
 import FICDept from './Components/FIC/FICDept'
 import ReturnForm from './Components/Login/ReturnForm'
@@ -51,6 +53,18 @@ const appRouter = createBrowserRouter([
       {
         path: '/user-Home',
         element: <UserHome />,
+      },
+      {
+        path:'/contact-us',
+        element :<ContactUs />
+      },
+      {
+        path:'/authority-home',
+        element :<AuthorityHome />
+      },
+      {
+        path: '/authority/authority-orders',
+        element: <AuthorityOrder />,
       },
       {
         path: '/user-returnform',

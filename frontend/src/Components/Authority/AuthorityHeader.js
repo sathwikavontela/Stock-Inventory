@@ -12,7 +12,7 @@ const UserHeader = () => {
           className="NavLogo w-16 h-16"
         />
         <ul className="flex space-x-6 text-white px-8">
-          <Link to="/user-home">
+          <Link to="/authority-home">
             <li className="text-xl">Home</li>
           </Link>
 

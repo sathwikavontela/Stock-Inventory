@@ -14,6 +14,7 @@ const FicHome = () => {
         </div>
       </div>
     </div>
+    
   )
 }
 

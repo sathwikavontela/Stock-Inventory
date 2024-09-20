@@ -1,16 +1,16 @@
 import React from 'react'
-import UserHeader from './UserHeader'
-import UserSidebar from './UserSidebar'
-import UserBody from './UserBody'
+import AuthorityHeader from './AuthorityHeader';
+import AuthoritySidebar from './AuthoritySidebar';
+import AuthorityBody from './AuthorityBody';
 
 const UserHome = () => {
   return (
     <div>
-      <UserHeader />
+      <AuthorityHeader />
       <div className="pt-16 h-[100vh] flex">
-        <UserSidebar className="fixed" />
+        <AuthoritySidebar className="fixed" />
         <div className="p-4 flex-grow overflow-y-auto">
-          <UserBody />
+          <AuthorityBody />
         </div>
       </div>
     </div>
