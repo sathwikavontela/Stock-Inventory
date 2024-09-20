@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "item_name": "Product A",
     "item_quantity": 2,
     "requested_date": "2023-09-01",
@@ -7,6 +8,7 @@
     "status": "accepted"
   },
   {
+    "id": 2,
     "item_name": "Product B",
     "item_quantity": 5,
     "requested_date": "2023-09-05",
@@ -14,6 +16,7 @@
     "status": "pending"
   },
   {
+    "id": 3,
     "item_name": "Product C",
     "item_quantity": 1,
     "requested_date": "2023-09-10",
@@ -21,6 +24,7 @@
     "status": "accepted"
   },
   {
+    "id": 4,
     "item_name": "Product D",
     "item_quantity": 3,
     "requested_date": "2023-09-12",
@@ -28,6 +32,7 @@
     "status": "pending"
   },
   {
+    "id": 5,
     "item_name": "Product E",
     "item_quantity": 4,
     "requested_date": "2023-09-15",
@@ -35,6 +40,7 @@
     "status": "rejected"
   },
   {
+    "id": 6,
     "item_name": "Product F",
     "item_quantity": 2,
     "requested_date": "2023-09-20",
@@ -42,6 +48,7 @@
     "status": "accepted"
   },
   {
+    "id": 7,
     "item_name": "Product A",
     "item_quantity": 2,
     "requested_date": "2023-09-01",
@@ -49,6 +56,7 @@
     "status": "accepted"
   },
   {
+    "id": 8,
     "item_name": "Product B",
     "item_quantity": 5,
     "requested_date": "2023-09-05",
@@ -56,6 +64,7 @@
     "status": "pending"
   },
   {
+    "id": 9,
     "item_name": "Product C",
     "item_quantity": 1,
     "requested_date": "2023-09-10",
@@ -63,6 +72,7 @@
     "status": "accepted"
   },
   {
+    "id": 10,
     "item_name": "Product D",
     "item_quantity": 3,
     "requested_date": "2023-09-12",
@@ -70,6 +80,7 @@
     "status": "pending"
   },
   {
+    "id": 11,
     "item_name": "Product E",
     "item_quantity": 4,
     "requested_date": "2023-09-15",
@@ -77,6 +88,7 @@
     "status": "rejected"
   },
   {
+    "id": 12,
     "item_name": "Product F",
     "item_quantity": 2,
     "requested_date": "2023-09-20",

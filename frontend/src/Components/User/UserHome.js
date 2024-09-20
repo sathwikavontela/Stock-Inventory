@@ -8,8 +8,8 @@ const UserHome = () => {
     <div>
       <UserHeader />
       <div className="pt-16 h-[100vh] flex">
-        <UserSidebar />
-        <div className="p-4 flex-grow">
+        <UserSidebar className="fixed" />
+        <div className="p-4 flex-grow overflow-y-auto">
           <UserBody />
         </div>
       </div>
