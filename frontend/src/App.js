@@ -8,14 +8,11 @@ import UserHome from './Components/User/UserHome'
 import Orders from './Components/User/Orders'
 import Reports from './Components/User/Reports'
 import ContactUs from './Components/Contact/ContactUs'
-<<<<<<< HEAD
 import AuthorityHome from './Components/Authority/AuthorityHome'
 import AuthorityOrder from './Components/Authority/AuthorityOrder'
-=======
 import FicHome from './Components/FIC/FicHome'
 import FICDept from './Components/FIC/FICDept'
 import ReturnForm from './Components/Login/ReturnForm'
->>>>>>> 252696592fc2e538258be887c25ddf5fa38b46f1
 
 const Applayout = () => {
   return (
@@ -58,7 +55,6 @@ const appRouter = createBrowserRouter([
         element: <UserHome />,
       },
       {
-<<<<<<< HEAD
         path:'/contact-us',
         element :<ContactUs />
       },
@@ -69,7 +65,8 @@ const appRouter = createBrowserRouter([
       {
         path: '/authority/authority-orders',
         element: <AuthorityOrder />,
-=======
+      },
+      {
         path: '/user-returnform',
         element: <ReturnForm />,
       },
@@ -84,7 +81,6 @@ const appRouter = createBrowserRouter([
       {
         path: '/fic-reports',
         element: <FICDept />,
->>>>>>> 252696592fc2e538258be887c25ddf5fa38b46f1
       },
     ],
   },
