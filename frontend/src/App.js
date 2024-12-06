@@ -10,10 +10,10 @@ import Reports from './Components/User/Reports'
 import ContactUs from './Components/Contact/ContactUs'
 import AuthorityHome from './Components/Authority/AuthorityHome'
 import AuthorityOrder from './Components/Authority/AuthorityOrder'
-import FicHome from './Components/FIC/FicHome'
 import FICDept from './Components/FIC/FICDept'
 import ReturnForm from './Components/Login/ReturnForm'
 import ViewOrder from './Components/User/ViewOrder'
+import FicHome from './Components/FIC/FicHome'
 
 const Applayout = () => {
   return (
