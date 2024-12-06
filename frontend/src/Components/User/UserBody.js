@@ -1,43 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import InventoryCard from '../utils/InventoryCard'; // Ensure this path is correct
-import UserStockDisplay from '../Data/UserStockDisplay.json';
+import React, { useState, useEffect } from 'react'
+import InventoryCard from '../utils/InventoryCard' // Ensure this path is correct
+import UserStockDisplay from '../Data/UserStockDisplay.json'
 
 const UserBody = () => {
-  const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filteredProducts, setFilteredProducts] = useState([])
 
   // Initialize with all products when component mounts
   useEffect(() => {
-
     const fetchProducts = async () => {
       try {
         // const response = await fetch(UserStockDisplay);
         // const data=await response.json();
-        console.log(UserStockDisplay);
-        setProducts(UserStockDisplay);
-        setFilteredProducts(UserStockDisplay);
+        setProducts(UserStockDisplay)
+        setFilteredProducts(UserStockDisplay)
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching products:', error)
       }
     }
 
-    fetchProducts();
+    fetchProducts()
     //--------------
-  }, []);
+  }, [])
 
-const searchProducts = (query) => {
-  const lowerCaseQuery = query.toLowerCase();
-  const results = products.filter(products =>
-    products.name.toLowerCase().includes(lowerCaseQuery));
-    setFilteredProducts(results);
-  };
+  const searchProducts = (query) => {
+    const lowerCaseQuery = query.toLowerCase()
+    const results = products.filter((products) =>
+      products.name.toLowerCase().includes(lowerCaseQuery)
+    )
+    setFilteredProducts(results)
+  }
 
   const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    searchProducts(query);
-  };
+    const query = e.target.value
+    setSearchQuery(query)
+    searchProducts(query)
+  }
 
   return (
     <div className="p-6">
@@ -63,7 +62,7 @@ const searchProducts = (query) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UserBody;
+export default UserBody

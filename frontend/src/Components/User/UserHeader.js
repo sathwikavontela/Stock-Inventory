@@ -16,7 +16,7 @@ const UserHeader = () => {
             <li className="text-xl">Home</li>
           </Link>
 
-          <Link to="/logout">
+          <Link to="/">
             <li className="text-xl">Logout</li>
           </Link>
         </ul>

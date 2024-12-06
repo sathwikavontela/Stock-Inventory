@@ -1,15 +1,37 @@
 import React, { useState } from 'react'
 import LoginImage from '../utils/LogImg.png'
 import Header from '../Home/Header'
+import { BASE_URL } from '../helper'
+import { useNavigate } from 'react-router-dom'
 
 const LoginSignup = () => {
+  const navigate = useNavigate()
   const [isLogin, setIsLogin] = useState(true)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(isLogin ? 'Logging in' : 'Signing up', { username, password })
+    const url = `${BASE_URL}/api/v1/users/login`
+    const data = {
+      username: username,
+      password: password,
+    }
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
+    if (!response.ok) {
+      throw new Error('Login failed')
+    }
+    const responseObj = await response.json()
+    document.cookie = `accessToken=${responseObj.accessToken}; Secure; SameSite=None; Path=/`
+    console.log(responseObj.accessToken)
+    navigate('/user-Home')
   }
 
   return (

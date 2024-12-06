@@ -1,9 +1,9 @@
 import React from 'react'
-import AuthorityHeader from './AuthorityHeader';
-import AuthoritySidebar from './AuthoritySidebar';
-import AuthorityBody from './AuthorityBody';
+import AuthorityHeader from './AuthorityHeader'
+import AuthoritySidebar from './AuthoritySidebar'
+import AuthorityBody from './AuthorityBody'
 
-const UserHome = () => {
+const AuthorityHome = () => {
   return (
     <div>
       <AuthorityHeader />
@@ -17,4 +17,4 @@ const UserHome = () => {
   )
 }
 
-export default UserHome;
+export default AuthorityHome

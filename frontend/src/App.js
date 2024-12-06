@@ -13,6 +13,7 @@ import AuthorityOrder from './Components/Authority/AuthorityOrder'
 import FicHome from './Components/FIC/FicHome'
 import FICDept from './Components/FIC/FICDept'
 import ReturnForm from './Components/Login/ReturnForm'
+import ViewOrder from './Components/User/ViewOrder'
 
 const Applayout = () => {
   return (
@@ -47,6 +48,10 @@ const appRouter = createBrowserRouter([
         element: <Orders />,
       },
       {
+        path: '/orders/:orderId',
+        element: <ViewOrder />,
+      },
+      {
         path: '/reports',
         element: <Reports />,
       },
@@ -55,12 +60,12 @@ const appRouter = createBrowserRouter([
         element: <UserHome />,
       },
       {
-        path:'/contact-us',
-        element :<ContactUs />
+        path: '/contact-us',
+        element: <ContactUs />,
       },
       {
-        path:'/authority-home',
-        element :<AuthorityHome />
+        path: '/authority-home',
+        element: <AuthorityHome />,
       },
       {
         path: '/authority/authority-orders',
