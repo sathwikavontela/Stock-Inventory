@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../helper";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const UserReports = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState("last1month");
+  const [startDate, setStartDate] = useState(""); // For calendar start date
+  const [endDate, setEndDate] = useState(""); // For calendar end date
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const ordersPerPage = 10;
 
   useEffect(() => {
-    fetchApprovedRequests();
-  }, []); // Empty dependency array means this runs once when the component mounts
+    if (startDate && endDate) {
+      fetchApprovedRequests();
+    }
+  }, [startDate, endDate]); // Fetch data whenever dates are updated
 
   const fetchApprovedRequests = async () => {
     try {
-      const requests = await fetch(
-        `${BASE_URL}/api/v1/requests/getRequestsByDepartment`,
+      setLoading(true);
+      const response = await fetch(
+        `${BASE_URL}/api/v1/users/get/approved/items?startDate=${startDate}&endDate=${endDate}`,
         {
           method: "GET",
           headers: {
@@ -25,49 +31,20 @@ const UserReports = () => {
           credentials: "include",
         }
       );
-      console.log(requests);
-      if (!requests.ok) {
-        throw new Error(`Error: ${requests.status} - ${requests.statusText}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`${response.status} - ${response.statusText}`);
       }
-      const data = await requests.json();
-      console.log(data.requests[0]);
-      setOrders(data.requests);
+      setOrders(data.products);
+      setLoading(false);
     } catch (error) {
-      alert(error.message);
+      setError(error.message);
+      setLoading(false);
     }
   };
 
-  const filterOrdersByDate = (requestedDate) => {
-    const date = new Date(requestedDate);
-    const now = new Date();
-    const oneMonthAgo = new Date(now.setMonth(now.getMonth() - 1));
-    const threeMonthsAgo = new Date(now.setMonth(now.getMonth() - 3));
-    const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6));
-    const oneYearAgo = new Date(now.setFullYear(now.getFullYear() - 1));
-
-    switch (filter) {
-      case "last1month":
-        return date >= oneMonthAgo;
-      case "last3months":
-        return date >= threeMonthsAgo;
-      case "last6months":
-        return date >= sixMonthsAgo;
-      case "last1year":
-        return date >= oneYearAgo;
-      default:
-        return true;
-    }
-  };
-
-  const filteredOrders = orders.filter((order) => {
-    const isAcceptedOrApproved =
-      order.status === "accepted" || order.status === "approved";
-    const isWithinDateRange = filterOrdersByDate(order.requested_date);
-
-    return isAcceptedOrApproved && isWithinDateRange;
-  });
-
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -83,10 +60,37 @@ const UserReports = () => {
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(
-    indexOfFirstOrder,
-    indexOfLastOrder
-  );
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  // Function to download the PDF
+  const downloadPDF = async () => {
+    try {
+      const tableData = currentOrders.map((order) => [
+        order._id, // Order Name
+        order.totalQuantity, // Quantity
+        "Approved", // Status
+      ]);
+
+      // Create a new PDF document
+      const doc = new jsPDF();
+
+      // Add a title to the PDF
+      doc.text("User Reports", 14, 10);
+
+      // Add the table using autoTable
+      doc.autoTable({
+        head: [["Order Name", "Quantity", "Status"]],
+        body: tableData,
+        startY: 20, // Y offset for the table
+      });
+
+      // Save the PDF
+      doc.save("user-reports.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to download the PDF. Please try again.");
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -98,23 +102,37 @@ const UserReports = () => {
 
   return (
     <div className="px-8 w-full mt-8 pb-2">
-      <div className="mb-4">
-        <label htmlFor="filter" className="mr-2">
-          Filter by:
-        </label>
-        <select
-          id="filter"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="border rounded p-1"
-        >
-          <option value="last1month">Last 1 Month</option>
-          <option value="last3months">Last 3 Months</option>
-          <option value="last6months">Last 6 Months</option>
-          <option value="last1year">Last Year</option>
-        </select>
+      <h1 className="text-xl font-bold mb-4">User Reports</h1>
+
+      {/* Calendar for Date Selection */}
+      <div className="mb-4 flex space-x-4">
+        <div>
+          <label htmlFor="startDate" className="block text-sm font-medium">
+            Start Date
+          </label>
+          <input
+            type="date"
+            id="startDate"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border rounded p-2 w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="endDate" className="block text-sm font-medium">
+            End Date
+          </label>
+          <input
+            type="date"
+            id="endDate"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border rounded p-2 w-full"
+          />
+        </div>
       </div>
 
+      {/* Orders Table */}
       <div className="shadow overflow-hidden rounded-lg border-b border-gray-200">
         <table className="min-w-full bg-white">
           <thead className="bg-gray-800 text-white">
@@ -126,12 +144,6 @@ const UserReports = () => {
                 Quantity
               </th>
               <th className="w-1/4 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Requested Date
-              </th>
-              <th className="w-1/4 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Approved Date
-              </th>
-              <th className="w-1/4 text-left py-3 px-4 uppercase font-semibold text-sm">
                 Status
               </th>
             </tr>
@@ -140,32 +152,30 @@ const UserReports = () => {
             {currentOrders.length > 0 ? (
               currentOrders.map((order, index) => (
                 <tr key={index} className="bg-gray-50 even:bg-gray-100">
-                  <td className="w-1/4 text-left py-3 px-4">
-                    {order.item_name}
-                  </td>
-                  <td className="w-1/4 text-left py-3 px-4">
-                    {order.item_quantity}
-                  </td>
-                  <td className="w-1/4 text-left py-3 px-4">
-                    {order.requested_date}
-                  </td>
-                  <td className="w-1/4 text-left py-3 px-4">
-                    {order.approved_date || "N/A"}
-                  </td>
-                  <td className={`w-1/4 text-left py-3 px-4 text-green-500`}>
-                    {order.status}
-                  </td>
+                  <td className="w-1/4 text-left py-3 px-4">{order._id}</td>
+                  <td className="w-1/4 text-left py-3 px-4">{order.totalQuantity}</td>
+                  <td className="w-1/4 text-left py-3 px-4 text-green-500">Approved</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center py-4">
+                <td colSpan="3" className="text-center py-4">
                   No approved orders found
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Download PDF Button */}
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={downloadPDF}
+          className="bg-blue-500 text-white px-6 py-2 rounded-md"
+        >
+          Download PDF
+        </button>
       </div>
 
       {/* Pagination Controls */}
