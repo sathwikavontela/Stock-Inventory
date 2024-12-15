@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
   {
@@ -35,23 +35,25 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: true,
+      enum: ["department", "authority", "fic"],
       trim: true,
+      default: "department",
     },
   },
   {
     timestamps: true,
   }
-)
+);
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next() // Correct the path
-  this.password = await bcrypt.hash(this.password, 10) //hash it with salt of round 10
-  next()
-})
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next(); // Correct the path
+  this.password = await bcrypt.hash(this.password, 10); //hash it with salt of round 10
+  next();
+});
 
 userSchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password)
-}
+  return await bcrypt.compare(password, this.password);
+};
 
 //jwt.sign() is a method provided by the jsonwebtoken library that is used to generate a JWT.
 // It takes the payload (the data you want to send) and signs it using a secret or a private key,
@@ -69,12 +71,12 @@ userSchema.methods.generateAccessToken = function () {
       {
         expiresIn: 432000,
       }
-    )
-    return token
+    );
+    return token;
   } catch (error) {
-    console.error('Error while generating access token:', error)
-    throw new Error('Failed to generate access token')
+    console.error("Error while generating access token:", error);
+    throw new Error("Failed to generate access token");
   }
-}
+};
 
-export const User = mongoose.model('User', userSchema)
+export const User = mongoose.model("User", userSchema);

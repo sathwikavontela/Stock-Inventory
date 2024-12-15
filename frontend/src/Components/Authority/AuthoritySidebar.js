@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const AuthoritySidebar = () => {
   return (
@@ -16,7 +16,7 @@ const AuthoritySidebar = () => {
         </li>
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default AuthoritySidebar
+export default AuthoritySidebar;

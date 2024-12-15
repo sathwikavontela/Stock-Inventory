@@ -1,15 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import departmentsData from '../Data/SectionsData.json';
-import DepartmentRecords from './DepartmentRecords';
-import FICHeader from './FICHeader';
+import React, { useEffect, useState } from "react";
+import DepartmentRecords from "./DepartmentRecords";
+import FICHeader from "./FICHeader";
+import { BASE_URL } from "../helper";
 
 const FICDept = () => {
   const [departments, setDepartments] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(null);
+  const [loading, setLoading] = useState(true); // To handle loading state
+  const [error, setError] = useState(null); // To handle errors
 
   useEffect(() => {
-    // Load the departments data from JSON
-    setDepartments(departmentsData);
+    // Fetch departments from the backend API
+    const fetchDepartments = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/v1/users/getDepts`, {
+          credentials: "include", // to include cookies (if needed)
+        });
+        console.log(response);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch departments");
+        }
+
+        const data = await response.json();
+        setDepartments(data.departments); // assuming the response returns an array of departments
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepartments();
   }, []);
 
   const handleDepartmentClick = (id) => {
@@ -19,6 +41,14 @@ const FICDept = () => {
   const handleBack = () => {
     setSelectedDepartmentId(null);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -36,29 +66,24 @@ const FICDept = () => {
           </>
         ) : (
           <div className="max-w-7xl mx-auto bg-white p-10 rounded-lg shadow-xl">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Departments</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+              Departments
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {departments.map((dept) => (
                 <div
                   key={dept.id}
                   className="relative border border-gray-300 rounded-lg shadow-sm hover:shadow-md bg-white transition-all duration-300 cursor-pointer"
-                  onClick={() => handleDepartmentClick(dept.id)}
+                  onClick={() => handleDepartmentClick(dept.department)}
                 >
                   <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-5 text-center font-semibold rounded-t-lg">
                     {dept.name}
                   </div>
                   <div className="p-6 flex flex-col items-center">
-                    <img
-                      src={dept.image}
-                      alt={dept.name}
-                      className="w-24 h-24 object-cover rounded-full mb-4 border-4 border-gray-200 shadow-sm"
-                    />
-                    <p className="text-gray-600 text-lg mb-4">
-                      Total Requests: {dept.requests.length}
-                    </p>
-                    <button
-                      className="bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-purple-700 transition-all"
-                    >
+                    {/* <p className="text-gray-600 text-lg mb-4">
+   x                   Total Requests: {dept.requests.length}
+                    </p> */}
+                    <button className="bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-purple-700 transition-all">
                       View Details
                     </button>
                   </div>

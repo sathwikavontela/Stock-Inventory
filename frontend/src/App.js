@@ -1,102 +1,127 @@
-import { Outlet } from 'react-router-dom'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './Components/Home/Home'
-import LoginSignup from './Components/Login/LoginSignup'
-import RequestForm from './Components/Login/RequestForm'
-import About from './Components/About/About'
-import UserHome from './Components/User/UserHome'
-import Orders from './Components/User/Orders'
-import Reports from './Components/User/Reports'
-import ContactUs from './Components/Contact/ContactUs'
-import AuthorityHome from './Components/Authority/AuthorityHome'
-import AuthorityOrder from './Components/Authority/AuthorityOrder'
-import FICDept from './Components/FIC/FICDept'
-import ReturnForm from './Components/Login/ReturnForm'
-import ViewOrder from './Components/User/ViewOrder'
-import FicHome from './Components/FIC/FicHome'
+import { Outlet } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./Components/Home/Home";
+import LoginSignup from "./Components/Login/LoginSignup";
+import RequestForm from "./Components/Login/RequestForm";
+import About from "./Components/About/About";
+import UserHome from "./Components/User/UserHome";
+import Orders from "./Components/User/Orders";
+import Reports from "./Components/User/Reports";
+import ContactUs from "./Components/Contact/ContactUs";
+import AuthorityHome from "./Components/Authority/AuthorityHome";
+import AuthorityOrder from "./Components/Authority/AuthorityOrder";
+import FICDept from "./Components/FIC/FICDept";
+import ReturnForm from "./Components/Login/ReturnForm";
+import ViewOrder from "./Components/User/ViewOrder";
+import FicHome from "./Components/FIC/FicHome";
+import AddProduct from "./Components/FIC/AddProduct";
+import AddDepartment from "./Components/FIC/AddDepartment";
+import Requests from "./Components/FIC/Requests.";
+import Returns from "./Components/Authority/Returns";
+import AuthorityReports from "./Components/Authority/Reports";
 
 const Applayout = () => {
   return (
     <div>
       <Outlet />
     </div>
-  )
-}
+  );
+};
 const appRouter = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Applayout />,
     children: [
       {
-        path: '/',
+        path: "/",
         element: <Home />,
       },
       {
-        path: '/login',
+        path: "/login",
         element: <LoginSignup />,
       },
       {
-        path: '/requests',
+        path: "/requests",
         element: <RequestForm />,
       },
       {
-        path: '/about-us',
+        path: "/about-us",
         element: <About />,
       },
       {
-        path: '/orders',
+        path: "/orders",
         element: <Orders />,
       },
       {
-        path: '/orders/:orderId',
+        path: "/orders/:orderId",
         element: <ViewOrder />,
       },
       {
-        path: '/reports',
+        path: "/reports",
         element: <Reports />,
       },
       {
-        path: '/user-Home',
+        path: "/user-Home",
         element: <UserHome />,
       },
       {
-        path: '/contact-us',
+        path: "/contact-us",
         element: <ContactUs />,
       },
       {
-        path: '/authority-home',
+        path: "/authority-home",
         element: <AuthorityHome />,
       },
       {
-        path: '/authority/authority-orders',
+        path: "/authority/authority-orders",
         element: <AuthorityOrder />,
       },
       {
-        path: '/user-returnform',
+        path: "/authority/returns",
+        element: <Returns />,
+      },
+      {
+        path: "/authority/reports",
+        element: <AuthorityReports />,
+      },
+      {
+        path: "/user-returnform",
         element: <ReturnForm />,
       },
       {
-        path: '/contact-us',
+        path: "/contact-us",
         element: <ContactUs />,
       },
       {
-        path: '/fic-home',
+        path: "/fic-home",
         element: <FicHome />,
       },
       {
-        path: '/fic-reports',
+        path: "/fic-reports",
         element: <FICDept />,
+      },
+      {
+        path: "/fic/add-product",
+        element: <AddProduct />,
+      },
+      {
+        path: "/fic/add-department",
+        element: <AddDepartment />,
+      },
+      {
+        path: "/fic/requests",
+        element: <Requests />,
       },
     ],
   },
-])
+]);
 
 function App() {
   return (
     <div>
       <RouterProvider router={appRouter} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

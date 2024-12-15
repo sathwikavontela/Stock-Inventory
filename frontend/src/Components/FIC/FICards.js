@@ -1,5 +1,5 @@
-import React from 'react'
-import { MdEdit } from 'react-icons/md' // Importing an edit icon from react-icons
+import React from "react";
+import { MdEdit } from "react-icons/md"; // Importing an edit icon from react-icons
 
 const FICards = ({ item }) => {
   return (
@@ -17,10 +17,10 @@ const FICards = ({ item }) => {
         <div className="flex items-center justify-between mt-2">
           <p
             className={`font-semibold ${
-              item.isAvailable ? 'text-green-500' : 'text-red-500'
+              item.quantity > 0 ? "text-green-500" : "text-red-500"
             }`}
           >
-            {item.isAvailable ? 'Available' : 'Out of Stock'}
+            {item.quantity}
           </p>
 
           {/* Edit Icon beside availability */}
@@ -31,7 +31,7 @@ const FICards = ({ item }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FICards
+export default FICards;

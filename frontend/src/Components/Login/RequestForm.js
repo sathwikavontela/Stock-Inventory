@@ -1,55 +1,82 @@
-import React, { useState } from 'react'
-import UserHeader from '../User/UserHeader'
-import UserSidebar from '../User/UserSidebar'
-import { BASE_URL } from '../helper'
+import React, { useState, useEffect } from "react";
+import UserHeader from "../User/UserHeader";
+import UserSidebar from "../User/UserSidebar";
+import { BASE_URL } from "../helper";
 
 const RequestForm = () => {
-  const [items, setItems] = useState([{ item: '', quantity: '' }])
+  const [items, setItems] = useState([{ item: "", quantity: "" }]);
+  const [products, setProducts] = useState([]);
+
+  // Fetch products when the component mounts
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/api/v1/products/getAllProducts`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setProducts(data.products); // Assuming the API response includes a 'products' array
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleItemChange = (index, field, value) => {
-    const updatedItems = [...items]
-    updatedItems[index][field] = value
-    setItems(updatedItems)
-  }
+    const updatedItems = [...items];
+    updatedItems[index][field] = value;
+    setItems(updatedItems);
+  };
 
   const addItem = () => {
-    setItems([...items, { itemName: '', quantity: '' }])
-  }
+    setItems([...items, { item: "", quantity: "" }]);
+  };
 
   const removeItem = (index) => {
-    const updatedItems = [...items]
-    updatedItems.splice(index, 1)
-    setItems(updatedItems)
-  }
+    const updatedItems = [...items];
+    updatedItems.splice(index, 1);
+    setItems(updatedItems);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const requestData = { items: items }
-      //console.log(requestData)
+      const requestData = { items: items };
 
       const response = await fetch(
         `${BASE_URL}/api/v1/requests/createRequest`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          credentials: 'include',
+          credentials: "include",
           body: JSON.stringify(requestData),
         }
-      )
-      // console.log(response)
+      );
+
       if (!response.ok) {
-        throw new Error('Request submission failed')
+        throw new Error("Request submission failed");
       }
-      const data = await response.json()
-      alert('Request submitted successfully')
-      setItems([{ item: '', quantity: '' }])
+
+      const data = await response.json();
+      alert("Request submitted successfully");
+      setItems([{ item: "", quantity: "" }]);
     } catch (error) {
-      alert(error.message)
+      alert(error.message);
     }
-  }
+  };
 
   return (
     <>
@@ -69,7 +96,7 @@ const RequestForm = () => {
               <div key={index} className="mb-6 border-b border-gray-200 pb-4">
                 <h3 className="text-lg font-medium mb-4">Item {index + 1}</h3>
 
-                {/* Item Name */}
+                {/* Select Item from Dropdown */}
                 <div className="mb-4">
                   <label
                     className="block text-gray-700 mb-2"
@@ -77,16 +104,22 @@ const RequestForm = () => {
                   >
                     Item
                   </label>
-                  <input
-                    type="text"
+                  <select
                     id={`item-${index}`}
                     value={itemObj.item}
                     onChange={(e) =>
-                      handleItemChange(index, 'item', e.target.value)
+                      handleItemChange(index, "item", e.target.value)
                     }
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b14ae8]"
-                  />
+                  >
+                    <option value="">Select an item</option>
+                    {products.map((product) => (
+                      <option key={product._id} value={product.name}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Quantity */}
@@ -102,7 +135,7 @@ const RequestForm = () => {
                     id={`quantity-${index}`}
                     value={itemObj.quantity}
                     onChange={(e) =>
-                      handleItemChange(index, 'quantity', e.target.value)
+                      handleItemChange(index, "quantity", e.target.value)
                     }
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b14ae8]"
@@ -140,7 +173,7 @@ const RequestForm = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default RequestForm
+export default RequestForm;

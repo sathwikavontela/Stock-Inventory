@@ -1,26 +1,16 @@
-import { Authority } from '../models/authority.model.js'
-import { FIC } from '../models/fic.model.js'
-import { User } from '../models/user.model.js'
-
-const generateAccessToken = async (authorityId) => {
-  try {
-    const authorityInstance = await Authority.findById(authorityId)
-    const authorityToken = await authorityInstance.generateAccessToken()
-    return authorityToken
-  } catch (error) {
-    throw new Error('Something went wrong while generating the token')
-  }
-}
+import { Authority } from "../models/authority.model.js";
+import { FIC } from "../models/fic.model.js";
+import { User } from "../models/user.model.js";
 
 const createAuthority = async (req, res) => {
   try {
-    const { fullname, username, password, email, role } = req.body
+    const { fullname, username, password, email, role } = req.body;
     if (!fullname || !username || !password || !email || !role) {
-      return res.status(400).json({ message: 'All fields are required' })
+      return res.status(400).json({ message: "All fields are required" });
     }
-    const authorityInstance = await Authority.findOne({ username })
+    const authorityInstance = await Authority.findOne({ username });
     if (authorityInstance) {
-      return res.status(400).json({ message: 'Authority already exists' })
+      return res.status(400).json({ message: "Authority already exists" });
     }
 
     const newAuthority = await Authority.create({
@@ -29,99 +19,97 @@ const createAuthority = async (req, res) => {
       password,
       email,
       role,
-    })
+    });
     if (!newAuthority) {
       return res
         .status(400)
-        .json({ message: 'Error while creating the Authority' })
+        .json({ message: "Error while creating the Authority" });
     }
 
-    return res.status(200).json({ Authority: newAuthority })
+    return res.status(200).json({ Authority: newAuthority });
   } catch (error) {
-    return res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message });
   }
-}
+};
 
 const loginAuthority = async (req, res) => {
   try {
-    const { username, password } = req.body
+    const { username, password } = req.body;
     if (!username || !password) {
       return res
         .status(400)
-        .json({ message: 'Username and password are required!' })
+        .json({ message: "Username and password are required!" });
     }
-    if (await User.findOne({ username })) {
-      const existedUser = await User.findOne({ username })
-      //console.log(existedUser)
-      if (!existedUser) {
-        return res.status(400).json({ message: 'user not exists' })
-      }
-      const isPasswordValid = await existedUser.isPasswordCorrect(password)
-      //console.log(isPasswordValid)
-      if (!isPasswordValid) {
-        return res
-          .status(400)
-          .json({ message: 'username or password incorrect' })
-      }
-      const accessToken = await generateAccessToken(existedUser._id)
-      //console.log({ accessToken })
+    let member;
+    if (username.startsWith("department")) {
+      member = await User.findOne({ username });
+      if (!member)
+        return res.status(400).json({ message: "you are not authorized" });
+      const isPasswordValid = await member.isPasswordCorrect(password);
+      if (!isPasswordValid)
+        return res.status(400).json({ message: "your password is not valid" });
+      const departmentToken = await member.generateAccessToken();
       const options = {
         httpOnly: true,
-        secure: true,
-        sameSite: 'None',
-      }
+        secure: true, // Ensure this is true if using HTTPS
+        sameSite: "None",
+      };
       return res
         .status(200)
-        .cookie('accessToken', accessToken, options)
-        .json({ user: existedUser, accessToken })
-    }
-    if (await Authority.findOne({ username })) {
-      const existedAuthority = await Authority.findOne({ username })
-      if (!existedAuthority) {
-        return res.status(400).json({ message: 'User not exists' })
-      }
-      const isPasswordValid = await existedAuthority.isPasswordCorrect(password)
-      if (!isPasswordValid) {
-        return res
-          .status(400)
-          .json({ message: 'Username or password incorrect' })
-      }
-      const authorityToken = await generateAccessToken(existedAuthority._id)
+        .cookie("departmentToken", departmentToken, options)
+        .json({ member: member, departmentToken });
+    } else if (username.startsWith("fic")) {
+      member = await FIC.findOne({ username });
+      if (!member)
+        return res.status(400).json({ message: "you are not authorized" });
+      const isPasswordValid = await member.isPasswordCorrect(password);
+      if (!isPasswordValid)
+        return res.status(400).json({ message: "your password is not valid" });
+      const ficToken = await member.generateAccessToken();
       const options = {
         httpOnly: true,
-        secure: true,
-        sameSite: 'None',
-      }
+        secure: true, // Ensure this is true if using HTTPS
+        sameSite: "None",
+      };
       return res
         .status(200)
-        .cookie('accessToken', authorityToken, options)
-        .json({ authority: existedAuthority, authorityToken })
-    }
-    if (await FIC.findOne({ username })) {
-      const existedFIC = await FIC.findOne({ username })
-      if (!existedFIC) {
-        return res.status(400).json({ message: 'FIC does not exist' })
-      }
-      const isPasswordValid = await existedFIC.isPasswordCorrect(password)
-      if (!isPasswordValid) {
-        return res
-          .status(400)
-          .json({ message: 'Username or password incorrect' })
-      }
-      const ficToken = await generateAccessToken(existedFIC._id)
+        .cookie("ficToken", ficToken, options)
+        .json({ member: member, ficToken });
+    } else {
+      member = await Authority.findOne({ username });
+      if (!member)
+        return res.status(400).json({ message: "you are not authorized" });
+      const isPasswordValid = await member.isPasswordCorrect(password);
+      if (!isPasswordValid)
+        return res.status(400).json({ message: "your password is not valid" });
+      const authorityToken = await member.generateAccessToken();
       const options = {
         httpOnly: true,
-        secure: true,
-        sameSite: 'None',
-      }
+        secure: true, // Ensure this is true if using HTTPS
+        sameSite: "None",
+      };
       return res
         .status(200)
-        .cookie('accessToken', ficToken, options)
-        .json({ fic: existedFIC, ficToken })
+        .cookie("authorityToken", authorityToken, options)
+        .json({ member: member, authorityToken });
     }
   } catch (error) {
-    return res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message });
   }
-}
+};
 
-export { createAuthority, loginAuthority }
+const logout = async (req, res) => {
+  //console.log(req.user);
+  //await Department.findByIdAndUpdate(req.member._id);
+  const options = {
+    path: "/",
+    secure: true,
+    sameSite: "None",
+  };
+  return res
+    .status(200)
+    .clearCookie("authorityToken", options)
+    .json({ message: "Logged out successfully" });
+};
+
+export { createAuthority, loginAuthority, logout };

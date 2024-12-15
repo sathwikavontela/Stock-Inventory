@@ -1,13 +1,15 @@
-import { Router } from 'express'
+import { Router } from "express";
 import {
   createAuthority,
   loginAuthority,
-} from '../controllers/authority.controller.js'
+  logout,
+} from "../controllers/authority.controller.js";
 // import { verifyJwt } from '../middleware/auth.middleware.js'
 
-const router = Router()
+const router = Router();
 
-router.route('/createAuthority').post(createAuthority)
-router.route('/login').post(loginAuthority)
+router.route("/createAuthority").post(createAuthority);
+router.route("/login").post(loginAuthority);
+router.route("/logout").get(logout);
 
-export default router
+export default router;

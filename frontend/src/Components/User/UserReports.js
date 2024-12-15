@@ -1,67 +1,100 @@
-import React, { useState } from 'react'
-import orderData from './RequestData.json' // Adjust the path as necessary
+import React, { useState, useEffect } from "react";
+import { BASE_URL } from "../helper";
 
 const UserReports = () => {
-  const [orders, setOrders] = useState(orderData)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [filter, setFilter] = useState('last1month')
-  const ordersPerPage = 10
+  const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState("last1month");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const ordersPerPage = 10;
+
+  useEffect(() => {
+    fetchApprovedRequests();
+  }, []); // Empty dependency array means this runs once when the component mounts
+
+  const fetchApprovedRequests = async () => {
+    try {
+      const requests = await fetch(
+        `${BASE_URL}/api/v1/requests/getRequestsByDepartment`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      console.log(requests);
+      if (!requests.ok) {
+        throw new Error(`Error: ${requests.status} - ${requests.statusText}`);
+      }
+      const data = await requests.json();
+      console.log(data.requests[0]);
+      setOrders(data.requests);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   const filterOrdersByDate = (requestedDate) => {
-    const date = new Date(requestedDate)
-    const now = new Date()
-    const oneMonthAgo = new Date(now.setMonth(now.getMonth() - 1))
-    const threeMonthsAgo = new Date(now.setMonth(now.getMonth() - 3))
-    const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6))
-    const oneYearAgo = new Date(now.setFullYear(now.getFullYear() - 1))
+    const date = new Date(requestedDate);
+    const now = new Date();
+    const oneMonthAgo = new Date(now.setMonth(now.getMonth() - 1));
+    const threeMonthsAgo = new Date(now.setMonth(now.getMonth() - 3));
+    const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6));
+    const oneYearAgo = new Date(now.setFullYear(now.getFullYear() - 1));
 
     switch (filter) {
-      case 'last1month':
-        return date >= oneMonthAgo
-      case 'last3months':
-        return date >= threeMonthsAgo
-      case 'last6months':
-        return date >= sixMonthsAgo
-      case 'last1year':
-        return date >= oneYearAgo
+      case "last1month":
+        return date >= oneMonthAgo;
+      case "last3months":
+        return date >= threeMonthsAgo;
+      case "last6months":
+        return date >= sixMonthsAgo;
+      case "last1year":
+        return date >= oneYearAgo;
       default:
-        return true
+        return true;
     }
-  }
+  };
 
   const filteredOrders = orders.filter((order) => {
     const isAcceptedOrApproved =
-      order.status === 'accepted' || order.status === 'approved'
-    const isWithinDateRange = filterOrdersByDate(order.requested_date)
+      order.status === "accepted" || order.status === "approved";
+    const isWithinDateRange = filterOrdersByDate(order.requested_date);
 
-    // Debugging logs
-    console.log(
-      `Order: ${order.item_name}, Accepted/Approved: ${isAcceptedOrApproved}, Within Date Range: ${isWithinDateRange}`
-    )
+    return isAcceptedOrApproved && isWithinDateRange;
+  });
 
-    return isAcceptedOrApproved && isWithinDateRange
-  })
-
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage)
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
   const handleNext = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handlePrev = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
-  const indexOfLastOrder = currentPage * ordersPerPage
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = filteredOrders.slice(
     indexOfFirstOrder,
     indexOfLastOrder
-  )
+  );
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="px-8 w-full mt-8 pb-2">
@@ -117,7 +150,7 @@ const UserReports = () => {
                     {order.requested_date}
                   </td>
                   <td className="w-1/4 text-left py-3 px-4">
-                    {order.approved_date || 'N/A'}
+                    {order.approved_date || "N/A"}
                   </td>
                   <td className={`w-1/4 text-left py-3 px-4 text-green-500`}>
                     {order.status}
@@ -142,8 +175,8 @@ const UserReports = () => {
           disabled={currentPage === 1}
           className={`px-4 py-2 rounded-md ${
             currentPage === 1
-              ? 'bg-gray-200 opacity-50 cursor-not-allowed'
-              : 'bg-gray-800 text-white'
+              ? "bg-gray-200 opacity-50 cursor-not-allowed"
+              : "bg-gray-800 text-white"
           }`}
         >
           Prev
@@ -157,17 +190,15 @@ const UserReports = () => {
           disabled={currentPage === totalPages}
           className={`px-4 py-2 rounded-md ${
             currentPage === totalPages
-              ? 'opacity-50 cursor-not-allowed'
-              : 'bg-gray-800 text-white'
+              ? "opacity-50 cursor-not-allowed"
+              : "bg-gray-800 text-white"
           }`}
         >
           Next
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-
-
-export default UserReports
+export default UserReports;

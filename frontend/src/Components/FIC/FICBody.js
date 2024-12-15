@@ -1,44 +1,67 @@
-import React, { useState, useEffect } from 'react'
-
-import FICStockDisplay from '../Data/UserStockDisplay.json' // Assuming the JSON data for FIC
-import FICards from './FICards'
+import React, { useState, useEffect } from "react";
+import FICards from "./FICards";
+import { BASE_URL } from "../helper";
 
 const FICBody = () => {
-  const [products, setProducts] = useState([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filteredProducts, setFilteredProducts] = useState([])
+  const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // For loading state
+  const [error, setError] = useState(null); // For error state
 
-  // Initialize with all products when component mounts
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        console.log(FICStockDisplay) // Log to verify the data
-        setProducts(FICStockDisplay)
-        setFilteredProducts(FICStockDisplay)
-      } catch (error) {
-        console.error('Error fetching products:', error)
-      }
-    }
+        const response = await fetch(
+          `${BASE_URL}/api/v1/products/getAllProductsForFic`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-    fetchProducts()
-  }, [])
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setProducts(data.products); // Update state with fetched products
+        setFilteredProducts(data.products); // Initialize filtered list
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setError("Failed to load products. Please try again later.");
+      } finally {
+        setIsLoading(false); // Set loading to false regardless of success or error
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const searchProducts = (query) => {
-    const lowerCaseQuery = query.toLowerCase()
+    const lowerCaseQuery = query.toLowerCase();
     const results = products.filter((product) =>
       product.name.toLowerCase().includes(lowerCaseQuery)
-    )
-    setFilteredProducts(results)
-  }
+    );
+    setFilteredProducts(results);
+  };
 
   const handleSearchChange = (e) => {
-    const query = e.target.value
-    setSearchQuery(query)
-    searchProducts(query)
-  }
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    // Debounced search functionality
+    setTimeout(() => {
+      searchProducts(query);
+    }, 300);
+  };
 
   return (
     <div className="p-6">
+      {/* Search Input */}
       <div className="mb-4">
         <input
           type="text"
@@ -49,15 +72,26 @@ const FICBody = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((item) => <FICards key={item.id} item={item} />)
-        ) : (
-          <p className="text-gray-500">No items available.</p>
-        )}
-      </div>
-    </div>
-  )
-}
+      {/* Loading State */}
+      {isLoading && <p className="text-gray-500">Loading products...</p>}
 
-export default FICBody
+      {/* Error State */}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {/* Products Grid */}
+      {!isLoading && !error && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((item) => (
+              <FICards key={item.id} item={item} />
+            ))
+          ) : (
+            <p className="text-gray-500">No items available.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default FICBody;

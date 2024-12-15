@@ -1,140 +1,101 @@
-import React, { useState } from 'react';
-import orderData from './RequestData.json';
+import React, { useState, useEffect } from "react";
+import { BASE_URL } from "../helper.js";
 
 const OrdersList = () => {
-  const [orders, setOrders] = useState(orderData);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [newDept, setNewDept] = useState('');
-  const ordersPerPage = 10;
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null); // For viewing items
 
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  // Fetch requests from the backend
+  useEffect(() => {
+    const fetchRequests = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `${BASE_URL}/api/v1/requests/getRequestsforAuthority`,
+          { credentials: "include" }
+        );
+        const data = await response.json();
+        console.log(data);
+        setRequests(data.requests || []);
+      } catch (error) {
+        console.error("Error fetching requests:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case 'accepted':
-        return 'text-green-500';
-      case 'pending':
-        return 'text-yellow-500';
-      case 'rejected':
-        return 'text-red-500';
-      default:
-        return '';
-    }
-  };
+    fetchRequests();
+  }, []);
 
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleStatusChange = (index, newStatus) => {
-    const updatedOrders = [...orders];
-    updatedOrders[index].status = newStatus;
-    setOrders(updatedOrders);
-  };
-
-  const addNewDept = () => {
-    if (newDept.trim() !== '') {
-      const newOrder = {
-        id: orders.length + 1,
-        dept_name: newDept,
-        item_name: 'N/A',
-        item_quantity: 0,
-        requested_date: 'N/A',
-        status: 'pending',
-      };
-      setOrders([...orders, newOrder]);
-      setNewDept('');
-    }
-  };
-
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  // Loading state
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="px-8 w-full mt-8 pb-2">
-      {/* Table */}
-      <div className="shadow overflow-hidden rounded-lg border-b border-gray-200">
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-800 text-white">
+    <div className="container mx-auto mt-8">
+      <h1 className="text-2xl font-bold mb-4">Requests for Authority</h1>
+
+      {requests.length === 0 ? (
+        <p>No requests found.</p>
+      ) : (
+        <table className="min-w-full bg-white border border-gray-300">
+          <thead>
             <tr>
-              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Dept Name
-              </th>
-              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Item Name
-              </th>
-              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Quantity
-              </th>
-              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Requested Date
-              </th>
-              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Status
-              </th>
+              <th className="px-4 py-2 border">Request ID</th>
+              <th className="px-4 py-2 border">Department</th>
+              <th className="px-4 py-2 border">Status</th>
+              <th className="px-4 py-2 border">Requested Date</th>
+              <th className="px-4 py-2 border">Actions</th>
             </tr>
           </thead>
-          <tbody className="text-gray-700">
-            {currentOrders.length > 0 ? (
-              currentOrders.map((order, index) => (
-                <tr key={index} className="bg-gray-50 even:bg-gray-100">
-                  <td className="w-1/5 text-left py-3 px-4">{order.dept_name}</td>
-                  <td className="w-1/5 text-left py-3 px-4">{order.item_name}</td>
-                  <td className="w-1/5 text-left py-3 px-4">{order.item_quantity}</td>
-                  <td className="w-1/5 text-left py-3 px-4">{order.requested_date}</td>
-                  <td className="w-1/5 text-left py-3 px-4">
-                    <select
-                      value={order.status}
-                      onChange={(e) => handleStatusChange(index, e.target.value)}
-                      className={`px-2 py-1 rounded-md ${getStatusColor(order.status)}`}
-                    >
-                      <option value="accepted">Accepted</option>
-                      <option value="pending">Pending</option>
-                      <option value="rejected">Rejected</option>
-                    </select>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="text-center py-4">
-                  No orders found
+          <tbody>
+            {requests.map((request) => (
+              <tr key={request._id}>
+                <td className="px-4 py-2 border">{request._id}</td>
+                <td className="px-4 py-2 border">
+                  {request.userId?.department || "N/A"}
+                </td>
+                <td className="px-4 py-2 border">{request.status}</td>
+                <td className="px-4 py-2 border">
+                  {new Date(request.createdAt).toLocaleString()}
+                </td>
+                <td className="px-4 py-2 border">
+                  <button
+                    onClick={() => setSelectedRequest(request)}
+                    className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                  >
+                    View Items
+                  </button>
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
-      </div>
+      )}
 
-      {/* Pagination Controls */}
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={handlePrev}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-md ${currentPage === 1 ? 'bg-gray-200 opacity-50 cursor-not-allowed' : 'bg-gray-800 text-white'}`}
-        >
-          Prev
-        </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={handleNext}
-          disabled={currentPage === totalPages}
-          className={`px-4 py-2 rounded-md ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'bg-gray-800 text-white'}`}
-        >
-          Next
-        </button>
-      </div>
+      {/* Modal for Viewing Items */}
+      {selectedRequest && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+          <div className="bg-white p-4 rounded-md w-96">
+            <h2 className="text-lg font-semibold mb-2">Items Requested</h2>
+            <ul className="list-disc ml-5">
+              {selectedRequest.items.map((item, idx) => (
+                <li key={idx}>
+                  <strong>{item.item}</strong>: {item.quantity}
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={() => setSelectedRequest(null)}
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,81 +1,84 @@
-import React, { useEffect, useState } from 'react'
-import { FiEye } from 'react-icons/fi'
-import { BASE_URL } from '../helper'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { FiEye } from "react-icons/fi";
+import { BASE_URL } from "../helper";
+import { Link } from "react-router-dom";
 
 const OrdersList = () => {
-  const [orders, setOrders] = useState([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const ordersPerPage = 10
+  const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10;
 
   useEffect(() => {
-    fetchRequests()
-  }, [])
+    fetchRequests();
+  }, []);
 
   const fetchRequests = async () => {
     try {
-      const requests = await fetch(`${BASE_URL}/api/v1/requests/getRequests`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      })
-      console.log(requests)
+      const requests = await fetch(
+        `${BASE_URL}/api/v1/requests/getRequestsByDepartment`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      console.log(requests);
       if (!requests.ok) {
-        throw new Error(`Error: ${requests.status} - ${requests.statusText}`)
+        throw new Error(`Error: ${requests.status} - ${requests.statusText}`);
       }
-      const data = await requests.json()
-      console.log(data.requests[0])
-      setOrders(data.requests)
+      const data = await requests.json();
+      console.log(data.requests[0]);
+      setOrders(data.requests);
     } catch (error) {
-      alert(error.message)
+      alert(error.message);
     }
-  }
+  };
 
-  const totalPages = Math.ceil(orders.length / ordersPerPage)
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case 'accepted':
-        return 'text-green-500'
-      case 'pending':
-        return 'text-yellow-500'
-      case 'rejected':
-        return 'text-red-500'
+      case "accepted":
+        return "text-green-500";
+      case "pending":
+        return "text-yellow-500";
+      case "rejected":
+        return "text-red-500";
       default:
-        return ''
+        return "";
     }
-  }
+  };
 
   const handleNext = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handlePrev = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
-  const indexOfLastOrder = currentPage * ordersPerPage
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage
-  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder)
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
 
   const formatDate = (isoDate) => {
-    if (!isoDate) return 'N/A'
-    const date = new Date(isoDate)
-    return new Intl.DateTimeFormat('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    if (!isoDate) return "N/A";
+    const date = new Date(isoDate);
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: true,
-    }).format(date)
-  }
+    }).format(date);
+  };
 
   // const handleViewOrder = (orderId) => {
   //   alert(`View details for Order ID: ${orderId}`)
@@ -113,7 +116,7 @@ const OrdersList = () => {
                     {formatDate(order.createdAt)}
                   </td>
                   <td className="w-1/5 text-left py-3 px-4">
-                    {formatDate(order.updatedAt) || 'N/A'}
+                    {formatDate(order.updatedAt) || "N/A"}
                   </td>
                   <td
                     className={`w-1/5 text-left py-3 px-4 ${getStatusColor(
@@ -148,8 +151,8 @@ const OrdersList = () => {
           disabled={currentPage === 1}
           className={`px-4 py-2 rounded-md ${
             currentPage === 1
-              ? 'bg-gray-200 opacity-50 cursor-not-allowed'
-              : 'bg-gray-800 text-white'
+              ? "bg-gray-200 opacity-50 cursor-not-allowed"
+              : "bg-gray-800 text-white"
           }`}
         >
           Prev
@@ -163,15 +166,15 @@ const OrdersList = () => {
           disabled={currentPage === totalPages}
           className={`px-4 py-2 rounded-md ${
             currentPage === totalPages
-              ? 'opacity-50 cursor-not-allowed'
-              : 'bg-gray-800 text-white'
+              ? "opacity-50 cursor-not-allowed"
+              : "bg-gray-800 text-white"
           }`}
         >
           Next
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default OrdersList
+export default OrdersList;

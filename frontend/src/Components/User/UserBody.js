@@ -1,42 +1,56 @@
-import React, { useState, useEffect } from 'react'
-import InventoryCard from '../utils/InventoryCard' // Ensure this path is correct
-import UserStockDisplay from '../Data/UserStockDisplay.json'
+import React, { useState, useEffect } from "react";
+import InventoryCard from "../utils/InventoryCard"; // Ensure this path is correct
+import UserStockDisplay from "../Data/UserStockDisplay.json";
 
 const UserBody = () => {
-  const [products, setProducts] = useState([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filteredProducts, setFilteredProducts] = useState([])
+  const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   // Initialize with all products when component mounts
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // const response = await fetch(UserStockDisplay);
-        // const data=await response.json();
-        setProducts(UserStockDisplay)
-        setFilteredProducts(UserStockDisplay)
-      } catch (error) {
-        console.error('Error fetching products:', error)
-      }
-    }
+        const response = await fetch(
+          "http://localhost:3001/api/v1/products/getAllProducts",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-    fetchProducts()
-    //--------------
-  }, [])
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log("Fetched products:", data.products);
+        setProducts(data.products); // Set products state
+        setFilteredProducts(data.products); // Set filtered products
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        // Optional: Show error to users (e.g., using a toast or an alert)
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const searchProducts = (query) => {
-    const lowerCaseQuery = query.toLowerCase()
+    const lowerCaseQuery = query.toLowerCase();
     const results = products.filter((products) =>
       products.name.toLowerCase().includes(lowerCaseQuery)
-    )
-    setFilteredProducts(results)
-  }
+    );
+    setFilteredProducts(results);
+  };
 
   const handleSearchChange = (e) => {
-    const query = e.target.value
-    setSearchQuery(query)
-    searchProducts(query)
-  }
+    const query = e.target.value;
+    setSearchQuery(query);
+    searchProducts(query);
+  };
 
   return (
     <div className="p-6">
@@ -49,7 +63,6 @@ const UserBody = () => {
           onChange={handleSearchChange}
           className="w-1/2 p-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-600 transition duration-200 ease-in-out"
         />
-       
       </div>
 
       {/* Products Grid */}
@@ -62,10 +75,8 @@ const UserBody = () => {
           <p className="text-gray-500">No items available.</p>
         )}
       </div>
-
-      
     </div>
-  )
-}
+  );
+};
 
-export default UserBody
+export default UserBody;
