@@ -101,4 +101,34 @@ const getProductById = async (req, res) => {
   }
 }
 
-export { createProduct, getAllProducts, updateProduct, getProductById }
+const getProductByName = async (req, res) => {
+  const { productName } = req.params
+  console.log(productName)
+
+  try {
+    if (!productName) {
+      return res.status(400).json({ error: 'Product name is required.' })
+    }
+    const product = await Product.findOne({ name: productName })
+    // console.log(product)
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found.' })
+    }
+    // console.log(product)
+    return res.status(200).json({ product: product })
+  } catch (error) {
+    console.error('Error fetching product:', error)
+    return res.status(500).json({
+      error:
+        'An error occurred while fetching the product. Please try again later.',
+    })
+  }
+}
+
+export {
+  createProduct,
+  getAllProducts,
+  updateProduct,
+  getProductById,
+  getProductByName,
+}

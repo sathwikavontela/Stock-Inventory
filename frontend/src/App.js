@@ -20,6 +20,7 @@ import Requests from './Components/FIC/Requests.'
 import Returns from './Components/Authority/Returns'
 import AuthorityReports from './Components/Authority/Reports'
 import ProductUpdateForm from './Components/FIC/ProductUpdateForm'
+import OrderDetails from './Components/Authority/OrderDetails'
 
 const Applayout = () => {
   return (
@@ -116,6 +117,10 @@ const appRouter = createBrowserRouter([
       {
         path: '/fic/update-product/:productId',
         element: <ProductUpdateForm />,
+      },
+      {
+        path: '/authority/authority-orders/:orderId',
+        element: <OrderDetails />,
       },
     ],
   },

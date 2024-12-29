@@ -1,36 +1,45 @@
-import React, { useState, useEffect } from "react";
-import { BASE_URL } from "../helper.js";
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom' // Import useNavigate
+import { BASE_URL } from '../helper.js'
 
 const OrdersList = () => {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null); // For viewing items
+  const [requests, setRequests] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [selectedRequest, setSelectedRequest] = useState(null)
+  const navigate = useNavigate() // useNavigate hook for navigation
 
   // Fetch requests from the backend
   useEffect(() => {
     const fetchRequests = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
         const response = await fetch(
           `${BASE_URL}/api/v1/requests/getRequestsforAuthority`,
-          { credentials: "include" }
-        );
-        const data = await response.json();
-        console.log(data);
-        setRequests(data.requests || []);
+          { credentials: 'include' }
+        )
+        const data = await response.json()
+        setRequests(data.requests || [])
       } catch (error) {
-        console.error("Error fetching requests:", error);
+        console.error('Error fetching requests:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchRequests();
-  }, []);
+    fetchRequests()
+  }, [])
 
   // Loading state
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
+  }
+
+  // Handle View Items Button Click
+  const handleViewItemsClick = (request) => {
+    setSelectedRequest(request)
+    navigate(`${request._id}`, {
+      state: { request }, // Passing selected request details to the next page
+    })
   }
 
   return (
@@ -55,7 +64,7 @@ const OrdersList = () => {
               <tr key={request._id}>
                 <td className="px-4 py-2 border">{request._id}</td>
                 <td className="px-4 py-2 border">
-                  {request.userId?.department || "N/A"}
+                  {request.userId?.department || 'N/A'}
                 </td>
                 <td className="px-4 py-2 border">{request.status}</td>
                 <td className="px-4 py-2 border">
@@ -63,7 +72,7 @@ const OrdersList = () => {
                 </td>
                 <td className="px-4 py-2 border">
                   <button
-                    onClick={() => setSelectedRequest(request)}
+                    onClick={() => handleViewItemsClick(request)}
                     className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                   >
                     View Items
@@ -74,30 +83,8 @@ const OrdersList = () => {
           </tbody>
         </table>
       )}
-
-      {/* Modal for Viewing Items */}
-      {selectedRequest && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-          <div className="bg-white p-4 rounded-md w-96">
-            <h2 className="text-lg font-semibold mb-2">Items Requested</h2>
-            <ul className="list-disc ml-5">
-              {selectedRequest.items.map((item, idx) => (
-                <li key={idx}>
-                  <strong>{item.item}</strong>: {item.quantity}
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={() => setSelectedRequest(null)}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </div>
-  );
-};
+  )
+}
 
-export default OrdersList;
+export default OrdersList
