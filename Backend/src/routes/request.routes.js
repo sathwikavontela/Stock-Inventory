@@ -7,6 +7,7 @@ import {
   getRequestFormsForAuthority,
   getRequestFormsForFic,
   getRequestsForDepartments,
+  updateStatus,
 } from "../controllers/request.controller.js";
 import {
   verifyAuthority,
@@ -21,12 +22,13 @@ router.route("/getRequestsforFic").get(verifyFic, getRequestFormsForFic);
 router
   .route("/getRequestsforAuthority")
   .get(verifyAuthority, getRequestFormsForAuthority);
-router.route("/getRequestById/:orderId").get(verifyJwt, getRequestFormById);
+router.route("/getRequestById/:orderId").get(getRequestFormById);
 router
   .route("/getRequestsByDepartment")
   .get(verifyJwt, getRequestsForDepartments);
 router
   .route("/getApprovedRequestsByDepartment")
   .get(verifyJwt, getApprovedRequests);
+router.route("/updateStatus/:id").put(verifyAuthority, updateStatus);
 
 export default router;

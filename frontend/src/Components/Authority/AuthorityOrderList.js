@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../helper.js";
 
 const OrdersList = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null); // For viewing items
+  const navigate = useNavigate(); // Navigation hook
 
-  // Fetch requests from the backend
   useEffect(() => {
     const fetchRequests = async () => {
       setLoading(true);
@@ -16,7 +16,6 @@ const OrdersList = () => {
           { credentials: "include" }
         );
         const data = await response.json();
-        console.log(data);
         setRequests(data.requests || []);
       } catch (error) {
         console.error("Error fetching requests:", error);
@@ -28,7 +27,6 @@ const OrdersList = () => {
     fetchRequests();
   }, []);
 
-  // Loading state
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -63,7 +61,9 @@ const OrdersList = () => {
                 </td>
                 <td className="px-4 py-2 border">
                   <button
-                    onClick={() => setSelectedRequest(request)}
+                    onClick={() =>
+                      navigate(`/authority/update-request/${request._id}`)
+                    }
                     className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                   >
                     View Items
@@ -73,28 +73,6 @@ const OrdersList = () => {
             ))}
           </tbody>
         </table>
-      )}
-
-      {/* Modal for Viewing Items */}
-      {selectedRequest && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-          <div className="bg-white p-4 rounded-md w-96">
-            <h2 className="text-lg font-semibold mb-2">Items Requested</h2>
-            <ul className="list-disc ml-5">
-              {selectedRequest.items.map((item, idx) => (
-                <li key={idx}>
-                  <strong>{item.item}</strong>: {item.quantity}
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={() => setSelectedRequest(null)}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-            >
-              Close
-            </button>
-          </div>
-        </div>
       )}
     </div>
   );

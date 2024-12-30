@@ -19,6 +19,7 @@ import AddDepartment from "./Components/FIC/AddDepartment";
 import Requests from "./Components/FIC/Requests.";
 import Returns from "./Components/Authority/Returns";
 import AuthorityReports from "./Components/Authority/Reports";
+import UpdateOrder from "./Components/Authority/UpdateOrder";
 
 const Applayout = () => {
   return (
@@ -75,6 +76,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/authority/authority-orders",
         element: <AuthorityOrder />,
+      },
+      {
+        path: "/authority/update-request/:id",
+        element: <UpdateOrder />,
       },
       {
         path: "/authority/returns",

@@ -120,15 +120,9 @@ const getRequestsForDepartments = async (req, res) => {
 const getRequestFormById = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const userId = req.user._id;
-    if (!userId) {
-      return res.status(400).json({ message: "User not authorized" });
-    }
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
-    }
+    console.log(orderId);
     const request = await RequestForm.findById(orderId).populate("userId");
+    console.log(request);
     if (!request) {
       return res.status(400).json({ message: "Request not found" });
     }
@@ -160,6 +154,29 @@ const getApprovedRequests = async (req, res) => {
   }
 };
 
+const updateStatus = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const { status } = req.body;
+    if (!status) {
+      return res.status(400).json({ message: "status not found" });
+    }
+    const updatedRequest = await RequestForm.findByIdAndUpdate(
+      requestId,
+      { status },
+      { new: true, runValidators: true }
+    );
+    if (!updatedRequest) {
+      return res.status(404).json({ error: "Request not found." });
+    }
+    res
+      .status(200)
+      .json({ message: "Status updated successfully.", data: updatedRequest });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   createRequestForm,
   getRequestForms,
@@ -168,4 +185,5 @@ export {
   getApprovedRequests,
   getRequestFormsForFic,
   getRequestFormsForAuthority,
+  updateStatus,
 };
