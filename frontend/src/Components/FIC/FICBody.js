@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
-import FICards from "./FICards";
-import { BASE_URL } from "../helper";
+import React, { useState, useEffect } from 'react'
+// import FICards from './FICards'
+import { BASE_URL } from '../helper'
+import { MdEdit } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 const FICBody = () => {
-  const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // For loading state
-  const [error, setError] = useState(null); // For error state
+  const [products, setProducts] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filteredProducts, setFilteredProducts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -15,49 +18,46 @@ const FICBody = () => {
         const response = await fetch(
           `${BASE_URL}/api/v1/products/getAllProductsForFic`,
           {
-            method: "GET",
+            method: 'GET',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
           }
-        );
+        )
 
         if (!response.ok) {
-          throw new Error(`Error: ${response.status} - ${response.statusText}`);
+          throw new Error(`Error: ${response.status} - ${response.statusText}`)
         }
 
-        const data = await response.json();
-        console.log(data);
-        setProducts(data.products); // Update state with fetched products
-        setFilteredProducts(data.products); // Initialize filtered list
+        const data = await response.json()
+        setProducts(data.products)
+        setFilteredProducts(data.products)
       } catch (error) {
-        console.error("Error fetching products:", error);
-        setError("Failed to load products. Please try again later.");
+        setError('Failed to load products. Please try again later.')
       } finally {
-        setIsLoading(false); // Set loading to false regardless of success or error
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchProducts();
-  }, []);
-
-  const searchProducts = (query) => {
-    const lowerCaseQuery = query.toLowerCase();
-    const results = products.filter((product) =>
-      product.name.toLowerCase().includes(lowerCaseQuery)
-    );
-    setFilteredProducts(results);
-  };
+    fetchProducts()
+  }, [])
 
   const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
+    const query = e.target.value
+    setSearchQuery(query)
 
-    // Debounced search functionality
     setTimeout(() => {
-      searchProducts(query);
-    }, 300);
-  };
+      const lowerCaseQuery = query.toLowerCase()
+      const results = products.filter((product) =>
+        product.name.toLowerCase().includes(lowerCaseQuery)
+      )
+      setFilteredProducts(results)
+    }, 300)
+  }
+
+  const handleEditClick = (product) => {
+    navigate(`/fic/update-product/${product._id}`) // Pass the product ID in the URL
+  }
 
   return (
     <div className="p-6">
@@ -83,7 +83,33 @@ const FICBody = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((item) => (
-              <FICards key={item.id} item={item} />
+              <div key={item.id} className="p-4 shadow-md rounded-lg bg-white">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+                <div className="mt-4">
+                  <h2 className="text-lg font-bold">{item.name}</h2>
+                  <p className="text-gray-500">{item.description}</p>
+
+                  <div className="flex items-center justify-between mt-2">
+                    <p
+                      className={`font-semibold ${
+                        item.quantity > 0 ? 'text-green-500' : 'text-red-500'
+                      }`}
+                    >
+                      {item.quantity}
+                    </p>
+                    <button
+                      onClick={() => handleEditClick(item)}
+                      className="text-gray-500 hover:text-gray-800 ml-2"
+                    >
+                      <MdEdit size={20} />
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))
           ) : (
             <p className="text-gray-500">No items available.</p>
@@ -91,7 +117,7 @@ const FICBody = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default FICBody;
+export default FICBody

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { BASE_URL } from "../helper.js";
 
 const OrdersList = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // Navigation hook
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const navigate = useNavigate(); // useNavigate hook for navigation
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -30,6 +31,14 @@ const OrdersList = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  // Handle View Items Button Click
+  const handleViewItemsClick = (request) => {
+    setSelectedRequest(request);
+    navigate(`${request._id}`, {
+      state: { request }, // Passing selected request details to the next page
+    });
+  };
 
   return (
     <div className="container mx-auto mt-8">
@@ -61,9 +70,7 @@ const OrdersList = () => {
                 </td>
                 <td className="px-4 py-2 border">
                   <button
-                    onClick={() =>
-                      navigate(`/authority/update-request/${request._id}`)
-                    }
+                    onClick={() => handleViewItemsClick(request)}
                     className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                   >
                     View Items

@@ -122,7 +122,6 @@ const getRequestFormById = async (req, res) => {
     const { orderId } = req.params;
     console.log(orderId);
     const request = await RequestForm.findById(orderId).populate("userId");
-    console.log(request);
     if (!request) {
       return res.status(400).json({ message: "Request not found" });
     }
@@ -185,5 +184,4 @@ export {
   getApprovedRequests,
   getRequestFormsForFic,
   getRequestFormsForAuthority,
-  updateStatus,
 };
