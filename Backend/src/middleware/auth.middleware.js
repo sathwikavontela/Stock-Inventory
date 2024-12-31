@@ -22,7 +22,7 @@ export const verifyJwt = (req, res, next) => {
         }
 
         req.user = loggedInUser; // Attach the user to the request object
-        console.log(req.user);
+        //console.log(req.user);
         next(); // Proceed to the next middleware or route handler
       })
       .catch((error) => {
@@ -72,7 +72,7 @@ export const verifyAuthority = (req, res, next) => {
 export const verifyFic = (req, res, next) => {
   try {
     const ficToken = req.cookies.ficToken;
-    console.log(ficToken);
+    //console.log(ficToken);
     if (!ficToken) {
       //console.log(ficToken);
       return res.status(400).json({ message: "user not authorised" });

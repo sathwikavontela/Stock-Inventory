@@ -7,6 +7,7 @@ import {
   getRequestFormsForAuthority,
   getRequestFormsForFic,
   getRequestsForDepartments,
+  updateStatus,
 } from "../controllers/request.controller.js";
 import {
   verifyAuthority,
@@ -15,7 +16,7 @@ import {
 } from "../middleware/auth.middleware.js";
 
 const router = Router();
-router.route("/createRequest").post(createRequestForm);
+router.route("/createRequest").post(verifyJwt,createRequestForm);
 router.route("/getRequests").get(verifyJwt, getRequestForms);
 router.route("/getRequestsforFic").get(verifyFic, getRequestFormsForFic);
 router
@@ -29,5 +30,7 @@ router
 router
   .route("/getApprovedRequestsByDepartment")
   .get(verifyJwt, getApprovedRequests);
+
+router.route("/updateStatus/:orderId").put(verifyAuthority,updateStatus);
 
 export default router;
