@@ -89,39 +89,41 @@ const Returns = () => {
             {returns.length === 0 ? (
               <p>No returns raised by departments.</p>
             ) : (
-              <table className="table-auto w-full border-collapse border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border border-gray-300 px-4 py-2">
+              <table className="min-w-full bg-white">
+               <thead className="bg-gray-800 text-white">
+                  <tr>
+                    <th className="w-1/5 text-center py-3 px-4 uppercase font-semibold text-sm">
                       Department
                     </th>
-                    <th className="border border-gray-300 px-4 py-2">
+                    <th className="w-1/5 text-center py-3 px-4 uppercase font-semibold text-sm">
                       Return ID
                     </th>
-                    <th className="border border-gray-300 px-4 py-2">
+                    <th className="w-1/5 text-center py-3 px-4 uppercase font-semibold text-sm">
                       No. of Items
                     </th>
-                    <th className="border border-gray-300 px-4 py-2">Date</th>
-                    <th className="border border-gray-300 px-4 py-2">Status</th>
-                    <th className="border border-gray-300 px-4 py-2">Action</th>
+                    <th className="w-1/5 text-center py-3 px-4 uppercase font-semibold text-sm">
+                      Date
+                    </th>
+                    <th className="w-1/5 text-center py-3 px-4 uppercase font-semibold text-sm">
+                      Status
+                    </th>
+                    <th className="w-1/5 text-center py-3 pl-3 pr-10 uppercase font-semibold text-sm">
+                      Action
+                    </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-gray-700">
                   {returns.map((item) => (
-                    <tr key={item._id} className="text-center">
-                      <td className="border border-gray-300 px-4 py-2">
+                    <tr key={item._id} className="bg-gray-150">
+                      <td className="w-1/5  py-3 px-2 text-center">
                         {item.userId.department}
                       </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {item._id}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {item.items.length}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
+                      <td className="w-1/5 text-center py-3 px-2">{item._id}</td>
+                      <td className="w-1/5 text-center py-3 px-2">{item.items.length}</td>
+                      <td className="w-1/5 text-center py-3 px-2">
                         {new Date(item.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="border border-gray-300 px-4 py-2">
+                      <td className="w-1/5 text-center py-3 px-2">
                         <select
                           value={item.status || "Pending"}
                           onChange={(e) =>
@@ -135,7 +137,7 @@ const Returns = () => {
                           <option value="Rejected">Rejected</option>
                         </select>
                       </td>
-                      <td className="border border-gray-300 px-4 py-2">
+                      <td className="w-1/5 text-center py-3 px-2">
                         <button
                           onClick={() => handleViewClick(item)}
                           className="text-blue-500 hover:text-blue-700"
@@ -148,28 +150,35 @@ const Returns = () => {
                   ))}
                 </tbody>
               </table>
-            )}
+            )
+            
+            }
           </div>
 
           {/* Modal to Display Return Details */}
           {selectedReturn && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white w-full max-w-2xl p-6 rounded-lg shadow-lg relative">
-                <h2 className="text-xl font-bold mb-4 text-center">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="w-full h-full bg-white p-6 overflow-auto">
+              <button
+                onClick={closeModal}
+                className="absolute top-6 right-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-6"
+              >
+                Go Back
+              </button>
+              <div className="max-w-4xl w-full mx-auto p-6 rounded-lg shadow-lg">
+                <h2 className="text-3xl font-bold mb-6 text-center">
                   Return Details
                 </h2>
-                <p>
-                  <strong>Department:</strong>{" "}
-                  {selectedReturn.userId.department}
+                <p className="mb-2">
+                  <strong>Department:</strong> {selectedReturn.userId.department}
                 </p>
-                <p>
+                <p className="mb-2">
                   <strong>Return ID:</strong> {selectedReturn._id}
                 </p>
-                <p>
-                  <strong>Date:</strong>{" "}
-                  {new Date(selectedReturn.createdAt).toLocaleDateString()}
+                <p className="mb-2">
+                  <strong>Date:</strong> {new Date(selectedReturn.createdAt).toLocaleDateString()}
                 </p>
-                <p>
+                <p className="mb-4">
                   <strong>Items:</strong>
                 </p>
                 <ul className="list-disc pl-6">
@@ -179,15 +188,12 @@ const Returns = () => {
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={closeModal}
-                  className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 absolute top-4 right-4"
-                >
-                  Close
-                </button>
               </div>
             </div>
-          )}
+          </div>
+)}
+
+
         </div>
       </div>
     </div>

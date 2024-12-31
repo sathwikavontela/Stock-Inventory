@@ -44,7 +44,7 @@ const createDept = async (req, res) => {
 
     return res.status(200).json({ User: newUser });
   } catch (error) {
-    console.log("udhfd");
+    //console.log("udhfd");
     return res.status(400).json({ message: error.message });
   }
 };

@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 
 const createRequestForm = async (req, res) => {
   const { items } = req.body;
+  //console.log(req.user);
   // console.log(items)
   const userId = req.user._id;
   //console.log(userId)
@@ -182,7 +183,8 @@ const getApprovedRequests = async (req, res) => {
 
 const updateStatus = async (req, res) => {
   try {
-    const requestId = req.params.id;
+    const requestId = req.params.orderId;
+    console.log(requestId);
     const { status } = req.body;
     if (!status) {
       return res.status(400).json({ message: "status not found" });
@@ -211,5 +213,9 @@ export {
   getApprovedRequests,
   getRequestFormsForFic,
   getRequestFormsForAuthority,
+<<<<<<< HEAD
   getDepartmentReportsForFic,
+=======
+  updateStatus
+>>>>>>> 9110ed5e2205f606aaaead99262b62cee187209e
 };
