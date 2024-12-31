@@ -48,13 +48,10 @@ const DepartmentRecords = ({ departmentId, onBack }) => {
   };
 
   return (
-    <div className="p-6 w-full">
-      {/* Back Button */}
-
-      {/* Page Title */}
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">Approved Requests for {currentDepartment?.name}</h1>
-
-      {/* Filter Section */}
+    <div className="px-8 w-full mt-8 pb-2">
+      <h1 className="text-3xl font-semibold text-gray-800 mb-8">
+        Approved Requests for {currentDepartment?.name}
+      </h1>
       <div className="mb-4 flex items-center">
         <label className="mr-2 text-gray-700 font-semibold">Filter By:</label>
         <select
@@ -68,7 +65,7 @@ const DepartmentRecords = ({ departmentId, onBack }) => {
           <option value="1year">Past Year</option>
           <option value="custom">Custom Dates</option>
         </select>
-
+  
         {filterOption === 'custom' && (
           <div className="flex items-center">
             <input
@@ -86,33 +83,42 @@ const DepartmentRecords = ({ departmentId, onBack }) => {
           </div>
         )}
       </div>
-
-      {/* Table Section */}
-      <div className="shadow-lg rounded-lg border border-gray-200 overflow-hidden">
-        <table className="min-w-full table-auto">
-          <thead className="bg-gradient-to-r from-purple-600 to-blue-500 text-white">
+  
+      <div className="shadow overflow-hidden rounded-lg border-b border-gray-200">
+        <table className="min-w-full bg-white">
+          <thead className="bg-gray-800 text-white">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Quantity Approved</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Total Quantity Requested</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Requested Date</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Approved Date</th>
+              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Item Name
+              </th>
+              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Quantity Approved
+              </th>
+              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Total Quantity Requested
+              </th>
+              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Requested Date
+              </th>
+              <th className="w-1/5 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Approved Date
+              </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="text-gray-700">
             {filterOrders().length > 0 ? (
               filterOrders().map((order, index) => (
-                <tr key={index} className="even:bg-gray-100">
-                  <td className="px-6 py-4 whitespace-nowrap">{order.item_name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{order.approved_quantity}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{order.item_quantity}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{formatDate(order.requested_date)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{formatDate(order.approved_date)}</td>
+                <tr key={index} className="bg-gray-50 even:bg-gray-100">
+                  <td className="w-1/5 text-left py-3 px-4">{order.item_name}</td>
+                  <td className="w-1/5 text-left py-3 px-4">{order.approved_quantity}</td>
+                  <td className="w-1/5 text-left py-3 px-4">{order.item_quantity}</td>
+                  <td className="w-1/5 text-left py-3 px-4">{formatDate(order.requested_date)}</td>
+                  <td className="w-1/5 text-left py-3 px-4">{formatDate(order.approved_date)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center py-6 text-gray-500">
+                <td colSpan="5" className="text-center py-4 text-gray-500">
                   No approved requests found
                 </td>
               </tr>
@@ -122,6 +128,7 @@ const DepartmentRecords = ({ departmentId, onBack }) => {
       </div>
     </div>
   );
+  
 };
 
 export default DepartmentRecords;
