@@ -1,46 +1,44 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom' // Import useNavigate
-import { BASE_URL } from '../helper.js'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { BASE_URL } from "../helper.js";
 
 const OrdersList = () => {
-  const [requests, setRequests] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [selectedRequest, setSelectedRequest] = useState(null)
-  const navigate = useNavigate() // useNavigate hook for navigation
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const navigate = useNavigate(); // useNavigate hook for navigation
 
-  // Fetch requests from the backend
   useEffect(() => {
     const fetchRequests = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
         const response = await fetch(
           `${BASE_URL}/api/v1/requests/getRequestsforAuthority`,
-          { credentials: 'include' }
-        )
-        const data = await response.json()
-        setRequests(data.requests || [])
+          { credentials: "include" }
+        );
+        const data = await response.json();
+        setRequests(data.requests || []);
       } catch (error) {
-        console.error('Error fetching requests:', error)
+        console.error("Error fetching requests:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchRequests()
-  }, [])
+    fetchRequests();
+  }, []);
 
-  // Loading state
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   // Handle View Items Button Click
   const handleViewItemsClick = (request) => {
-    setSelectedRequest(request)
+    setSelectedRequest(request);
     navigate(`${request._id}`, {
       state: { request }, // Passing selected request details to the next page
-    })
-  }
+    });
+  };
 
   return (
     <div className="container mx-auto mt-8">
@@ -88,4 +86,4 @@ const OrdersList = () => {
   
 }
 
-export default OrdersList
+export default OrdersList;
