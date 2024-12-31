@@ -1,27 +1,3 @@
-<<<<<<< HEAD
-import { Outlet } from 'react-router-dom'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './Components/Home/Home'
-import LoginSignup from './Components/Login/LoginSignup'
-import RequestForm from './Components/Login/RequestForm'
-import About from './Components/About/About'
-import UserHome from './Components/User/UserHome'
-import Orders from './Components/User/Orders'
-import Reports from './Components/User/Reports'
-import ContactUs from './Components/Contact/ContactUs'
-import AuthorityHome from './Components/Authority/AuthorityHome'
-import AuthorityOrder from './Components/Authority/AuthorityOrder'
-import FICDept from './Components/FIC/FICDept'
-import ReturnForm from './Components/Login/ReturnForm'
-import FicHome from './Components/FIC/FicHome'
-import AddProduct from './Components/FIC/AddProduct'
-import AddDepartment from './Components/FIC/AddDepartment'
-import Requests from './Components/FIC/Requests.'
-import Returns from './Components/Authority/Returns'
-import AuthorityReports from './Components/Authority/Reports'
-
-import OrderDetails from './Components/Authority/OrderDetails'
-=======
 import { Outlet } from "react-router-dom";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./Components/Home/Home";
@@ -45,11 +21,10 @@ import Returns from "./Components/Authority/Returns";
 import AuthorityReports from "./Components/Authority/Reports";
 import ProductUpdateForm from "./Components/FIC/ProductUpdateForm";
 import OrderDetails from "./Components/Authority/OrderDetails";
->>>>>>> 74a475b5f4f1c0510069dad51c2cd011ded31bbf
 
-import ViewSpecific from './Components/User/ViewSpecific'
-import UpdateForm from './Components/FIC/UpdateForm'
-import AuthorityViewOrder from './Components/Authority/AuthorityViewOrder'
+import ViewSpecific from "./Components/User/ViewSpecific";
+import UpdateForm from "./Components/FIC/UpdateForm";
+import AuthorityViewOrder from "./Components/Authority/AuthorityViewOrder";
 
 const Applayout = () => {
   return (
@@ -84,13 +59,8 @@ const appRouter = createBrowserRouter([
         element: <Orders />,
       },
       {
-<<<<<<< HEAD
-        path: '/orders/:orderId',
-        element:<ViewSpecific/>
-=======
         path: "/orders/:orderId",
         element: <ViewOrder />,
->>>>>>> 74a475b5f4f1c0510069dad51c2cd011ded31bbf
       },
       {
         path: "/reports",
@@ -149,21 +119,12 @@ const appRouter = createBrowserRouter([
         element: <Requests />,
       },
       {
-<<<<<<< HEAD
-        path: '/fic/update-product/:productId',
-        element: <UpdateForm/>,
-      },
-      {
-        path: '/authority/authority-orders/:orderId',
-        element: <AuthorityViewOrder />,
-=======
         path: "/fic/update-product/:productId",
         element: <ProductUpdateForm />,
       },
       {
         path: "/authority/authority-orders/:orderId",
         element: <OrderDetails />,
->>>>>>> 74a475b5f4f1c0510069dad51c2cd011ded31bbf
       },
     ],
   },

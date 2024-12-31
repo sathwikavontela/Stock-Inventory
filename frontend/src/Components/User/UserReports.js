@@ -5,6 +5,7 @@ import "jspdf-autotable";
 
 const UserReports = () => {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [startDate, setStartDate] = useState(""); // For calendar start date
   const [endDate, setEndDate] = useState(""); // For calendar end date
@@ -12,17 +13,31 @@ const UserReports = () => {
   const [error, setError] = useState(null);
   const ordersPerPage = 10;
 
+  // Fetch all orders initially
+  useEffect(() => {
+    fetchApprovedRequests();
+  }, []);
+
+  // Filter orders when dates are updated
   useEffect(() => {
     if (startDate && endDate) {
-      fetchApprovedRequests();
+      const filtered = orders.filter((order) => {
+        const orderDate = new Date(order.date); // Replace `order.date` with the actual date field
+        return (
+          orderDate >= new Date(startDate) && orderDate <= new Date(endDate)
+        );
+      });
+      setFilteredOrders(filtered);
+    } else {
+      setFilteredOrders(orders); // Reset to all orders if no filters are applied
     }
-  }, [startDate, endDate]); // Fetch data whenever dates are updated
+  }, [startDate, endDate, orders]);
 
   const fetchApprovedRequests = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${BASE_URL}/api/v1/users/get/approved/items?startDate=${startDate}&endDate=${endDate}`,
+        `${BASE_URL}/api/v1/users/get/approved/items`,
         {
           method: "GET",
           headers: {
@@ -37,6 +52,7 @@ const UserReports = () => {
         throw new Error(`${response.status} - ${response.statusText}`);
       }
       setOrders(data.products);
+      setFilteredOrders(data.products);
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -44,7 +60,7 @@ const UserReports = () => {
     }
   };
 
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -60,9 +76,11 @@ const UserReports = () => {
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const currentOrders = filteredOrders.slice(
+    indexOfFirstOrder,
+    indexOfLastOrder
+  );
 
-  // Function to download the PDF
   const downloadPDF = async () => {
     try {
       const tableData = currentOrders.map((order) => [
@@ -71,20 +89,21 @@ const UserReports = () => {
         "Approved", // Status
       ]);
 
-      // Create a new PDF document
       const doc = new jsPDF();
-
-      // Add a title to the PDF
       doc.text("User Reports", 14, 10);
-
-      // Add the table using autoTable
+      if (startDate || endDate) {
+        doc.text(
+          `Date Range: ${startDate || "N/A"} - ${endDate || "N/A"}`,
+          14,
+          20
+        );
+      }
       doc.autoTable({
         head: [["Order Name", "Quantity", "Status"]],
         body: tableData,
-        startY: 20, // Y offset for the table
+        startY: 30,
       });
 
-      // Save the PDF
       doc.save("user-reports.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -153,8 +172,12 @@ const UserReports = () => {
               currentOrders.map((order, index) => (
                 <tr key={index} className="bg-gray-50 even:bg-gray-100">
                   <td className="w-1/4 text-left py-3 px-4">{order._id}</td>
-                  <td className="w-1/4 text-left py-3 px-4">{order.totalQuantity}</td>
-                  <td className="w-1/4 text-left py-3 px-4 text-green-500">Approved</td>
+                  <td className="w-1/4 text-left py-3 px-4">
+                    {order.totalQuantity}
+                  </td>
+                  <td className="w-1/4 text-left py-3 px-4 text-green-500">
+                    Approved
+                  </td>
                 </tr>
               ))
             ) : (
