@@ -1,336 +1,171 @@
 import React, { useState, useEffect } from "react";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import { BASE_URL } from "../helper";
-import AuthorityHeader from "./AuthorityHeader";
-import AuthoritySidebar from "./AuthoritySidebar";
 
-const AuthorityReports = () => {
-  const [returns, setReturns] = useState([]);
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
+const UserReports = () => {
+  const [orders, setOrders] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
-
-  // Pagination states for returns and requests
-  const [returnsPage, setReturnsPage] = useState(1);
-  const [requestsPage, setRequestsPage] = useState(1);
-  const itemsPerPage = 5; // Number of items per page
-
-  // State to manage modal visibility and selected item
-  const [viewItem, setViewItem] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [returnsResponse, requestsResponse] = await Promise.all([
-          fetch(`${BASE_URL}/api/v1/returns/getReturnsForAuth`, {
-            credentials: "include",
-          }),
-          fetch(`${BASE_URL}/api/v1/requests/getRequestsforAuthority`, {
-            credentials: "include",
-          }),
-        ]);
-
-        if (!returnsResponse.ok || !requestsResponse.ok) {
-          throw new Error("Failed to fetch data.");
-        }
-
-        const returnsData = await returnsResponse.json();
-        const requestsData = await requestsResponse.json();
-
-        setReturns(returnsData.returns);
-        setRequests(requestsData.requests);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchApprovedRequests(); // Fetch all orders initially
   }, []);
 
-  // Group data by department
-  const groupByDepartment = (data) => {
-    return data.reduce((acc, curr) => {
-      const dept = curr.userId.department;
-      if (!acc[dept]) acc[dept] = [];
-      acc[dept].push(curr);
-      return acc;
-    }, {});
-  };
+  const fetchApprovedRequests = async () => {
+    try {
+      setLoading(true);
 
-  const groupedReturns = groupByDepartment(returns);
-  const groupedRequests = groupByDepartment(requests);
+      // Construct query string based on the availability of startDate and endDate
+      let url = `${BASE_URL}/api/v1/users/get/approved/items1`;
 
-  // Pagination logic
-  const paginateData = (data, page) => {
-    const start = (page - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return data.slice(start, end);
-  };
+      if (startDate && endDate) {
+        url += `?startDate=${startDate}&endDate=${endDate}`;
+      }
 
-  const handlePagination = (type, action) => {
-    if (type === "returns") {
-      if (action === "prev" && returnsPage > 1) setReturnsPage(returnsPage - 1);
-      if (
-        action === "next" &&
-        returnsPage * itemsPerPage < groupedReturns[selectedDepartment]?.length
-      )
-        setReturnsPage(returnsPage + 1);
-    } else if (type === "requests") {
-      if (action === "prev" && requestsPage > 1)
-        setRequestsPage(requestsPage - 1);
-      if (
-        action === "next" &&
-        requestsPage * itemsPerPage <
-          groupedRequests[selectedDepartment]?.length
-      )
-        setRequestsPage(requestsPage + 1);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch orders");
+      }
+
+      setOrders(data.requests || []);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
     }
   };
 
-  const handleViewItem = (item) => {
-    setViewItem(item);
-    setIsModalOpen(true);
+  const downloadPDF = () => {
+    try {
+      const doc = new jsPDF();
+      const tableData = orders.map((order) => [
+        order.itemName,
+        order.quantity,
+        order.status,
+      ]);
+
+      doc.text("User Reports", 14, 10);
+      doc.autoTable({
+        head: [["Item Name", "Quantity", "Status"]],
+        body: tableData,
+        startY: 20,
+      });
+
+      doc.save("user-reports.pdf");
+    } catch (error) {
+      alert("Error generating PDF: " + error.message);
+    }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setViewItem(null);
-  };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex h-screen">
-      <AuthorityHeader />
-      <div className="pt-16 h-[100vh] flex">
-        <AuthoritySidebar />
-        <div className="p-4 mx-6 w-[80vw] h-full overflow-y-auto">
-          <div className="p-6 overflow-auto">
-            {!selectedDepartment ? (
-              <div>
-                <h2 className="text-xl font-bold mb-4">Select a Department:</h2>
-                <ul className="list-disc list-inside">
-                  {Object.keys(groupedReturns).length === 0 &&
-                  Object.keys(groupedRequests).length === 0 ? (
-                    <p>No returns or requests raised by departments.</p>
-                  ) : (
-                    Object.keys({ ...groupedReturns, ...groupedRequests }).map(
-                      (department) => (
-                        <li
-                          key={department}
-                          className="cursor-pointer text-blue-500 hover:underline"
-                          onClick={() => {
-                            setSelectedDepartment(department);
-                            setReturnsPage(1);
-                            setRequestsPage(1);
-                          }}
-                        >
-                          {department}
-                        </li>
-                      )
-                    )
-                  )}
-                </ul>
-              </div>
-            ) : (
-              <div>
-                <button
-                  className="mb-4 px-4 py-2 bg-gray-300 text-gray-700 rounded"
-                  onClick={() => setSelectedDepartment(null)}
-                >
-                  Back to Departments
-                </button>
-                <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-bold mb-4">
-                    Reports for Department: {selectedDepartment}
-                  </h2>
-                </div>
+    <div className="px-8 w-full mt-8 pb-2">
+      <h1 className="text-xl font-bold mb-4">User Reports</h1>
 
-                {/* Returns Table */}
-                <h3 className="text-lg font-bold mb-2">Returns</h3>
-                <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-300 px-4 py-2">ID</th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        No. of Items
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">Date</th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Status
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">View</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginateData(
-                      groupedReturns[selectedDepartment] || [],
-                      returnsPage
-                    ).map((item) => (
-                      <tr key={item._id} className="text-center">
-                        <td className="border border-gray-300 px-4 py-2">
-                          {item._id}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {item.items.length}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {item.status || "Pending"}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          <button
-                            className="px-4 py-2 bg-blue-500 text-white rounded"
-                            onClick={() => handleViewItem(item)}
-                          >
-                            View
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="flex justify-end mb-4">
-                  <button
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded mr-2"
-                    onClick={() => handlePagination("returns", "prev")}
-                    disabled={returnsPage === 1}
-                  >
-                    Prev
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded"
-                    onClick={() => handlePagination("returns", "next")}
-                    disabled={
-                      returnsPage * itemsPerPage >=
-                      groupedReturns[selectedDepartment]?.length
-                    }
-                  >
-                    Next
-                  </button>
-                </div>
-
-                {/* Requests Table */}
-                <h3 className="text-lg font-bold mb-2">Requests</h3>
-                <table className="table-auto w-full border-collapse border border-gray-300">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-300 px-4 py-2">ID</th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        No. of Items
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">Date</th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Status
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">View</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginateData(
-                      groupedRequests[selectedDepartment] || [],
-                      requestsPage
-                    ).map((item) => (
-                      <tr key={item._id} className="text-center">
-                        <td className="border border-gray-300 px-4 py-2">
-                          {item._id}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {item.items.length}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {item.status || "Pending"}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          <button
-                            className="px-4 py-2 bg-blue-500 text-white rounded"
-                            onClick={() => handleViewItem(item)}
-                          >
-                            View
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="flex justify-end mb-4">
-                  <button
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded mr-2"
-                    onClick={() => handlePagination("requests", "prev")}
-                    disabled={requestsPage === 1}
-                  >
-                    Prev
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded"
-                    onClick={() => handlePagination("requests", "next")}
-                    disabled={
-                      requestsPage * itemsPerPage >=
-                      groupedRequests[selectedDepartment]?.length
-                    }
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+      {/* Date Filter */}
+      <div className="mb-4 flex space-x-4">
+        <div>
+          <label htmlFor="startDate" className="block text-sm font-medium">
+            Start Date
+          </label>
+          <input
+            type="date"
+            id="startDate"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border rounded p-2 w-full"
+          />
         </div>
+        <div>
+          <label htmlFor="endDate" className="block text-sm font-medium">
+            End Date
+          </label>
+          <input
+            type="date"
+            id="endDate"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border rounded p-2 w-full"
+          />
+        </div>
+        <button
+          onClick={fetchApprovedRequests}
+          className={`px-6 py-2 rounded-md mt-6 ${
+            startDate && endDate
+              ? "bg-blue-500 text-white"
+              : "bg-gray-400 text-gray-200 cursor-not-allowed"
+          }`}
+          disabled={!startDate || !endDate}
+        >
+          Filter
+        </button>
       </div>
 
-      {/* Modal for View Item */}
-      {isModalOpen && viewItem && (
-        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full">
-            <h3 className="text-xl font-bold mb-4">Item Details</h3>
-            <div>
-              <p>
-                <strong>Item ID:</strong> {viewItem._id}
-              </p>
-              <p>
-                <strong>Department:</strong> {viewItem.userId.department}
-              </p>
-              <p>
-                <strong>No. of Items:</strong> {viewItem.items.length}
-              </p>
-              <p>
-                <strong>Status:</strong> {viewItem.status}
-              </p>
-              <p>
-                <strong>Date:</strong>{" "}
-                {new Date(viewItem.createdAt).toLocaleDateString()}
-              </p>
-              <p>
-                <strong>Items List:</strong>
-              </p>
-              <ul>
-                {viewItem.items.map((item, idx) => (
-                  <li key={idx}>
-                    <strong>{item.item}</strong>: {item.quantity}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <button
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
-              onClick={closeModal}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Orders Table */}
+      <div className="shadow overflow-hidden rounded-lg border-b border-gray-200">
+        <table className="min-w-full bg-white">
+          <thead className="bg-gray-800 text-white">
+            <tr>
+              <th className="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Item Name
+              </th>
+              <th className="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Quantity
+              </th>
+              <th className="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700">
+            {orders.length > 0 ? (
+              orders.map((order, index) => (
+                <tr key={index} className="bg-gray-50 even:bg-gray-100">
+                  <td className="w-1/3 text-left py-3 px-4">
+                    {order.itemName}
+                  </td>
+                  <td className="w-1/3 text-left py-3 px-4">
+                    {order.quantity}
+                  </td>
+                  <td className="w-1/3 text-left py-3 px-4">{order.status}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="text-center py-4">
+                  No approved orders found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Download PDF Button */}
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={downloadPDF}
+          className="bg-green-500 text-white px-6 py-2 rounded-md"
+        >
+          Download PDF
+        </button>
+      </div>
     </div>
   );
 };
 
-export default AuthorityReports;
+export default UserReports;

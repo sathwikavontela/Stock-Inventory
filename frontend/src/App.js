@@ -25,6 +25,7 @@ import OrderDetails from "./Components/Authority/OrderDetails";
 import ViewSpecific from "./Components/User/ViewSpecific";
 import UpdateForm from "./Components/FIC/UpdateForm";
 import AuthorityViewOrder from "./Components/Authority/AuthorityViewOrder";
+import FICDeptReports from "./Components/FIC/FICDeptReports";
 
 const Applayout = () => {
   return (
@@ -105,6 +106,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/fic-reports",
         element: <FICDept />,
+      },
+      {
+        path: "/fic-reports/:deptId",
+        element: <FICDeptReports />,
       },
       {
         path: "/fic/add-product",

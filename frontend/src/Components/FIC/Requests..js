@@ -16,20 +16,25 @@ const FICRequests = () => {
         `${BASE_URL}/api/v1/requests/getRequestsforFic`,
         { credentials: "include" }
       );
-      console.log(response);
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
       const data = await response.json();
-      console.log(data);
 
-      // Split the data into approved and rejected requests
-      //   setApprovedRequests(
-      //     data.filter((request) => request.status === "approved")
-      //   );
-      //   setRejectedRequests(
-      //     data.filter((request) => request.status === "rejected")
-      //   );
+      // Assuming the response has a key "requests" that contains the array
+      if (Array.isArray(data.requests)) {
+        const approved = data.requests.filter(
+          (request) => request.status === "Approved"
+        );
+        const rejected = data.requests.filter(
+          (request) => request.status === "Rejected"
+        );
+
+        setApprovedRequests(approved); // Set approved requests state
+        setRejectedRequests(rejected); // Set rejected requests state
+      } else {
+        throw new Error("Expected 'requests' to be an array.");
+      }
     } catch (error) {
       setError(error.message);
     } finally {
@@ -69,15 +74,17 @@ const FICRequests = () => {
                   <thead>
                     <tr className="bg-[#b14ae8] text-white">
                       <th className="py-2 px-4">Request ID</th>
-                      <th className="py-2 px-4">Description</th>
+                      <th className="py-2 px-4">Items</th>
                       <th className="py-2 px-4">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {approvedRequests.map((request) => (
-                      <tr key={request.id} className="border-b">
-                        <td className="py-2 px-4">{request.id}</td>
-                        <td className="py-2 px-4">{request.description}</td>
+                      <tr key={request._id} className="border-b">
+                        <td className="py-2 px-4">{request._id}</td>
+                        <td className="py-2 px-4">
+                          {request.items.map((item) => item.item).join(", ")}
+                        </td>
                         <td className="py-2 px-4">{request.status}</td>
                       </tr>
                     ))}
@@ -98,15 +105,17 @@ const FICRequests = () => {
                   <thead>
                     <tr className="bg-[#b14ae8] text-white">
                       <th className="py-2 px-4">Request ID</th>
-                      <th className="py-2 px-4">Description</th>
+                      <th className="py-2 px-4">Items</th>
                       <th className="py-2 px-4">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {rejectedRequests.map((request) => (
-                      <tr key={request.id} className="border-b">
-                        <td className="py-2 px-4">{request.id}</td>
-                        <td className="py-2 px-4">{request.description}</td>
+                      <tr key={request._id} className="border-b">
+                        <td className="py-2 px-4">{request._id}</td>
+                        <td className="py-2 px-4">
+                          {request.items.map((item) => item.item).join(", ")}
+                        </td>
                         <td className="py-2 px-4">{request.status}</td>
                       </tr>
                     ))}

@@ -5,7 +5,6 @@ import "jspdf-autotable";
 
 const UserReports = () => {
   const [orders, setOrders] = useState([]);
-  const [filteredOrders, setFilteredOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [startDate, setStartDate] = useState(""); // For calendar start date
   const [endDate, setEndDate] = useState(""); // For calendar end date
@@ -13,31 +12,17 @@ const UserReports = () => {
   const [error, setError] = useState(null);
   const ordersPerPage = 10;
 
-  // Fetch all orders initially
-  useEffect(() => {
-    fetchApprovedRequests();
-  }, []);
-
-  // Filter orders when dates are updated
   useEffect(() => {
     if (startDate && endDate) {
-      const filtered = orders.filter((order) => {
-        const orderDate = new Date(order.date); // Replace `order.date` with the actual date field
-        return (
-          orderDate >= new Date(startDate) && orderDate <= new Date(endDate)
-        );
-      });
-      setFilteredOrders(filtered);
-    } else {
-      setFilteredOrders(orders); // Reset to all orders if no filters are applied
+      fetchApprovedRequests();
     }
-  }, [startDate, endDate, orders]);
+  }, [startDate, endDate]); // Fetch data whenever dates are updated
 
   const fetchApprovedRequests = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${BASE_URL}/api/v1/users/get/approved/items`,
+        `${BASE_URL}/api/v1/users/get/approved/items?startDate=${startDate}&endDate=${endDate}`,
         {
           method: "GET",
           headers: {
@@ -52,7 +37,7 @@ const UserReports = () => {
         throw new Error(`${response.status} - ${response.statusText}`);
       }
       setOrders(data.products);
-      setFilteredOrders(data.products);
+      console.log(data.products);
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -60,7 +45,7 @@ const UserReports = () => {
     }
   };
 
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -76,11 +61,9 @@ const UserReports = () => {
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(
-    indexOfFirstOrder,
-    indexOfLastOrder
-  );
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
 
+  // Function to download the PDF
   const downloadPDF = async () => {
     try {
       const tableData = currentOrders.map((order) => [
@@ -89,21 +72,20 @@ const UserReports = () => {
         "Approved", // Status
       ]);
 
+      // Create a new PDF document
       const doc = new jsPDF();
+
+      // Add a title to the PDF
       doc.text("User Reports", 14, 10);
-      if (startDate || endDate) {
-        doc.text(
-          `Date Range: ${startDate || "N/A"} - ${endDate || "N/A"}`,
-          14,
-          20
-        );
-      }
+
+      // Add the table using autoTable
       doc.autoTable({
         head: [["Order Name", "Quantity", "Status"]],
         body: tableData,
-        startY: 30,
+        startY: 20, // Y offset for the table
       });
 
+      // Save the PDF
       doc.save("user-reports.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
