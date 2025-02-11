@@ -144,4 +144,4 @@ const OrderDetails = () => {
   );
 };
 
-export default OrderDetails;
+export default OrderDetails

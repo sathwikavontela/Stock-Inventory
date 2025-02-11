@@ -19,9 +19,11 @@ import Requests from './Components/FIC/Requests.'
 import Returns from './Components/Authority/Returns'
 import AuthorityReports from './Components/Authority/Reports'
 import ViewSpecific from "./Components/User/ViewSpecific";
-import UpdateForm from "./Components/FIC/UpdateForm";
-import AuthorityViewOrder from "./Components/Authority/AuthorityViewOrder";
+
 import FICDeptReports from "./Components/FIC/FICDeptReports";
+import ProductUpdateForm from './Components/FIC/ProductUpdateForm'
+import OrderDetails from './Components/Authority/OrderDetails'
+import ProductUpdate from './Components/FIC/ProductUpdate'
 
 const Applayout = () => {
   return (
@@ -125,7 +127,7 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/fic/update-product/:productId",
-        element: <ProductUpdateForm />,
+        element: <ProductUpdate/>,
       },
       {
         path: "/authority/authority-orders/:orderId",
