@@ -23,6 +23,7 @@ const FICRequests = () => {
         throw new Error("Failed to fetch requests");
       }
       const data = await response.json();
+      console.log(data);
 
       if (Array.isArray(data.requests)) {
         const approved = data.requests.filter(
