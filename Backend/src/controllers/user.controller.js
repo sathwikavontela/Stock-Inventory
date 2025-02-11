@@ -114,52 +114,93 @@ const logoutUser = async (req, res) => {
     .json({ message: "Logged out successfully" });
 };
 
+// const getApprovedProducts = async (req, res) => {
+//   try {
+//     const { startDate, endDate } = req.query;
+//     const userId = req.user._id;
+//     console.log(startDate);
+//     console.log("your logged in user id is", userId);
+//     // Validate date range input
+//     if (!startDate || !endDate) {
+//       return res.status(400).json({
+//         message: "startDate and endDate are required query parameters.",
+//       });
+//     }
+
+//     const start = new Date(startDate);
+//     const end = new Date(endDate);
+
+//     if (isNaN(start) || isNaN(end)) {
+//       return res
+//         .status(400)
+//         .json({ message: "Invalid date format. Use YYYY-MM-DD." });
+//     }
+//     // MongoDB aggregation pipeline
+//     const results = await RequestForm.aggregate([
+//       // Match only approved requests within the date range
+//       {
+//         $match: {
+//           status: "Approved",
+//           updatedAt: { $gte: start, $lte: end },
+//           userId: userId,
+//         },
+//       },
+//       // Debug to see documents passing the match stage
+//       { $project: { status: 1, updatedAt: 1, items: 1 } },
+//       // Unwind items array to prepare for grouping
+//       { $unwind: "$items" },
+//       // Group by product name and calculate total quantity
+//       {
+//         $group: {
+//           _id: "$items.item", // Group by product name
+//           totalQuantity: { $sum: "$items.quantity" }, // Sum the quantities
+//           latestUpdate: { $max: "$updatedAt" }, // Get the latest update date
+//         },
+//       },
+//       // Sort by latest update date (descending)
+//       { $sort: { latestUpdate: -1 } },
+//     ]);
+//     return res.status(200).json({ products: results });
+//   } catch (error) {
+//     console.error("Error fetching approved products:", error);
+//     return res
+//       .status(500)
+//       .json({ message: "Internal server error.", error: error.message });
+//   }
+// };
+
 const getApprovedProducts = async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
     const userId = req.user._id;
-    console.log(startDate);
-    console.log("your logged in user id is", userId);
-    // Validate date range input
-    if (!startDate || !endDate) {
-      return res.status(400).json({
-        message: "startDate and endDate are required query parameters.",
-      });
-    }
-
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (isNaN(start) || isNaN(end)) {
-      return res
-        .status(400)
-        .json({ message: "Invalid date format. Use YYYY-MM-DD." });
-    }
-    // MongoDB aggregation pipeline
-    const results = await RequestForm.aggregate([
-      // Match only approved requests within the date range
-      {
-        $match: {
-          status: "Approved",
-          updatedAt: { $gte: start, $lte: end },
-          userId: userId,
-        },
-      },
-      // Debug to see documents passing the match stage
-      { $project: { status: 1, updatedAt: 1, items: 1 } },
-      // Unwind items array to prepare for grouping
-      { $unwind: "$items" },
-      // Group by product name and calculate total quantity
-      {
-        $group: {
-          _id: "$items.item", // Group by product name
-          totalQuantity: { $sum: "$items.quantity" }, // Sum the quantities
-          latestUpdate: { $max: "$updatedAt" }, // Get the latest update date
-        },
-      },
-      // Sort by latest update date (descending)
-      { $sort: { latestUpdate: -1 } },
-    ]);
+    console.log(userId);
+    const results = await RequestForm.find({
+      userId: userId,
+      status: "Approved",
+    });
+    // const results = await RequestForm.aggregate([
+    //   // Match only approved requests within the date range
+    //   {
+    //     $match: {
+    //       status: "Approved",
+    //       updatedAt: { $gte: start, $lte: end },
+    //       userId: userId,
+    //     },
+    //   },
+    //   // Debug to see documents passing the match stage
+    //   { $project: { status: 1, updatedAt: 1, items: 1 } },
+    //   // Unwind items array to prepare for grouping
+    //   { $unwind: "$items" },
+    //   // Group by product name and calculate total quantity
+    //   {
+    //     $group: {
+    //       _id: "$items.item", // Group by product name
+    //       totalQuantity: { $sum: "$items.quantity" }, // Sum the quantities
+    //       latestUpdate: { $max: "$updatedAt" }, // Get the latest update date
+    //     },
+    //   },
+    //   // Sort by latest update date (descending)
+    //   { $sort: { latestUpdate: -1 } },
+    // ]);
     return res.status(200).json({ products: results });
   } catch (error) {
     console.error("Error fetching approved products:", error);
