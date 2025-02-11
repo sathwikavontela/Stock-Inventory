@@ -13,7 +13,9 @@ const RequestFormSchema = new mongoose.Schema(
       ref: 'User',
     },
     items: [ItemSchema],
-
+    remarks:{
+      type:String,
+    },
     status: {
       type: String,
       enum: ['Pending', 'Approved', 'Rejected'],
