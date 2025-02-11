@@ -24,6 +24,7 @@ import FICDeptReports from "./Components/FIC/FICDeptReports";
 import ProductUpdateForm from './Components/FIC/ProductUpdateForm'
 import OrderDetails from './Components/Authority/OrderDetails'
 import ProductUpdate from './Components/FIC/ProductUpdate'
+import AuthorityProtected from './Components/ProtectedRoutes/AuthorityProtected'
 
 const Applayout = () => {
   return (
@@ -79,15 +80,15 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/authority/authority-orders",
-        element: <AuthorityOrder />,
+        element:<AuthorityProtected element={AuthorityOrder}/>
       },
       {
         path: "/authority/returns",
-        element: <Returns />,
+        element: <AuthorityProtected element={Returns} />,
       },
       {
-        path: "/authority/reports",
-        element: <AuthorityReports />,
+      path: "/authority/reports",
+      element: <AuthorityProtected element={AuthorityReports} />,
       },
       {
         path: "/user-returnform",
