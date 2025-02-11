@@ -1,168 +1,88 @@
-import React, { useState, useEffect } from "react";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import AuthorityHeader from "./AuthorityHeader";
 import { BASE_URL } from "../helper";
-
 const UserReports = () => {
-  const [orders, setOrders] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [departments, setDepartments] = useState([]); // Stores the department list
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+
+  const navigate = useNavigate(); // Hook to navigate dynamically
 
   useEffect(() => {
-    fetchApprovedRequests(); // Fetch all orders initially
+    // Fetch departments from the backend API
+    const fetchDepartments = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/v1/users/getDepts`, {
+          credentials: "include", // To include cookies if required
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch departments");
+        }
+
+        const data = await response.json();
+        console.log(data);
+       /*  setDepartment */
+         setDepartments(data.departments); // Assuming data has a `departments` array
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepartments();
   }, []);
 
-  const fetchApprovedRequests = async () => {
-    try {
-      setLoading(true);
-
-      // Construct query string based on the availability of startDate and endDate
-      let url = `${BASE_URL}/api/v1/users/get/approved/items1`;
-
-      if (startDate && endDate) {
-        url += `?startDate=${startDate}&endDate=${endDate}`;
-      }
-
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to fetch orders");
-      }
-
-      setOrders(data.requests || []);
-      setLoading(false);
-    } catch (error) {
-      setError(error.message);
-      setLoading(false);
-    }
+  const handleDepartmentClick = (departmentId) => {
+    // Navigate to a dynamic route using department ID
+    navigate(`/fic-reports/${departmentId}`);
   };
 
-  const downloadPDF = () => {
-    try {
-      const doc = new jsPDF();
-      const tableData = orders.map((order) => [
-        order.itemName,
-        order.quantity,
-        order.status,
-      ]);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p>Loading departments...</p>
+      </div>
+    );
+  }
 
-      doc.text("User Reports", 14, 10);
-      doc.autoTable({
-        head: [["Item Name", "Quantity", "Status"]],
-        body: tableData,
-        startY: 20,
-      });
-
-      doc.save("user-reports.pdf");
-    } catch (error) {
-      alert("Error generating PDF: " + error.message);
-    }
-  };
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-red-600">Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="px-8 w-full mt-8 pb-2">
-      <h1 className="text-xl font-bold mb-4">User Reports</h1>
-
-      {/* Date Filter */}
-      <div className="mb-4 flex space-x-4">
-        <div>
-          <label htmlFor="startDate" className="block text-sm font-medium">
-            Start Date
-          </label>
-          <input
-            type="date"
-            id="startDate"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border rounded p-2 w-full"
-          />
+    <div className="min-h-screen bg-gray-100">
+      <AuthorityHeader />
+      <div className="pt-24 px-8">
+        <div className="max-w-7xl mx-auto bg-white p-10 rounded-lg shadow-xl">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+            Departments
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            {departments.map((dept) => (
+              <div
+                key={dept._id}
+                className="relative border border-gray-300 rounded-lg shadow-sm hover:shadow-md bg-white transition-all duration-300 cursor-pointer"
+                onClick={() => handleDepartmentClick(dept._id)} // Navigate on click
+              >
+                <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-5 text-center font-semibold rounded-t-lg">
+                  {dept.department}
+                </div>
+                <div className="p-6 flex flex-col items-center">
+                  <button className="bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-purple-700 transition-all">
+                    View Details
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div>
-          <label htmlFor="endDate" className="block text-sm font-medium">
-            End Date
-          </label>
-          <input
-            type="date"
-            id="endDate"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border rounded p-2 w-full"
-          />
-        </div>
-        <button
-          onClick={fetchApprovedRequests}
-          className={`px-6 py-2 rounded-md mt-6 ${
-            startDate && endDate
-              ? "bg-blue-500 text-white"
-              : "bg-gray-400 text-gray-200 cursor-not-allowed"
-          }`}
-          disabled={!startDate || !endDate}
-        >
-          Filter
-        </button>
-      </div>
-
-      {/* Orders Table */}
-      <div className="shadow overflow-hidden rounded-lg border-b border-gray-200">
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-800 text-white">
-            <tr>
-              <th className="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Item Name
-              </th>
-              <th className="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Quantity
-              </th>
-              <th className="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-700">
-            {orders.length > 0 ? (
-              orders.map((order, index) => (
-                <tr key={index} className="bg-gray-50 even:bg-gray-100">
-                  <td className="w-1/3 text-left py-3 px-4">
-                    {order.itemName}
-                  </td>
-                  <td className="w-1/3 text-left py-3 px-4">
-                    {order.quantity}
-                  </td>
-                  <td className="w-1/3 text-left py-3 px-4">{order.status}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="3" className="text-center py-4">
-                  No approved orders found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Download PDF Button */}
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={downloadPDF}
-          className="bg-green-500 text-white px-6 py-2 rounded-md"
-        >
-          Download PDF
-        </button>
       </div>
     </div>
   );

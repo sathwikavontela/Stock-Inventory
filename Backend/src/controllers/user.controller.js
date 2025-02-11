@@ -50,9 +50,10 @@ const createDept = async (req, res) => {
 };
 
 const getDepts = async (req, res) => {
+  console.log("call made to get departments with the request object", req.body);
   try {
     const departments = await User.find({});
-    // console.log(departments);
+     console.log(departments);
     if (!departments) {
       return res.status(400).json({ message: "No departments found" });
     }

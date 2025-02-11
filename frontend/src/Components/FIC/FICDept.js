@@ -24,7 +24,8 @@ const FICDept = () => {
 
         const data = await response.json();
         console.log(data);
-        setDepartments(data.departments); // Assuming data has a `departments` array
+       /*  setDepartment */
+         setDepartments(data.departments); // Assuming data has a `departments` array
       } catch (err) {
         setError(err.message);
       } finally {
