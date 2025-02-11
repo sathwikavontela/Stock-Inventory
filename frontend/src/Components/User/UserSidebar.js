@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const UserSidebar = () => {
   return (
@@ -7,28 +7,27 @@ const UserSidebar = () => {
       <ul className="space-y-6 mt-6">
         <li className="hover:bg-gray-700 p-2 rounded-2xl">
           <Link to="/requests">
-            <div className='w-full text-center'>Requests</div>
+            <div className="w-full text-center">Request</div>
           </Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded-2xl">
           <Link to="/orders">
-          <div className='w-full  text-center'>Orders</div>
+            <div className="w-full  text-center">Orders</div>
           </Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded-2xl">
           <Link to="/reports">
-          <div className='w-full text-center'>Reports</div>
+            <div className="w-full text-center">Reports</div>
           </Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded-2xl">
           <Link to="/user-returnform">
-          <div className='w-full text-center'>Returns</div>
+            <div className="w-full text-center">Return</div>
           </Link>
         </li>
       </ul>
     </div>
-    
-  )
-}
+  );
+};
 
-export default UserSidebar
+export default UserSidebar;

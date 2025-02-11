@@ -4,6 +4,7 @@ import { Authority } from "../models/authority.model.js";
 import { FIC } from "../models/fic.model.js";
 
 export const verifyJwt = (req, res, next) => {
+  console.log(req);
   const token = req.cookies.departmentToken;
   console.log(token);
   // console.log(token)

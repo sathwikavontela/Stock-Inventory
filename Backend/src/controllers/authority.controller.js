@@ -35,6 +35,7 @@ const createAuthority = async (req, res) => {
 const loginAuthority = async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log(username, password);
     if (!username || !password) {
       return res
         .status(400)
