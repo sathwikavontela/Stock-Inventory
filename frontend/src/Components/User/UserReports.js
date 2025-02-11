@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../helper";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import ReactApexChart from "react-apexcharts";
 
 const UserReports = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [startDate, setStartDate] = useState(""); // For calendar start date
-  const [endDate, setEndDate] = useState(""); // For calendar end date
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const ordersPerPage = 10;
@@ -16,7 +17,7 @@ const UserReports = () => {
     if (startDate && endDate) {
       fetchApprovedRequests();
     }
-  }, [startDate, endDate]); // Fetch data whenever dates are updated
+  }, [startDate, endDate]);
 
   const fetchApprovedRequests = async () => {
     try {
@@ -32,12 +33,12 @@ const UserReports = () => {
         }
       );
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         throw new Error(`${response.status} - ${response.statusText}`);
       }
       setOrders(data.products);
-      console.log(data.products);
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -63,34 +64,46 @@ const UserReports = () => {
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
 
-  // Function to download the PDF
   const downloadPDF = async () => {
     try {
       const tableData = currentOrders.map((order) => [
-        order._id, // Order Name
-        order.totalQuantity, // Quantity
-        "Approved", // Status
+        order._id,
+        order.totalQuantity,
+        "Approved",
       ]);
 
-      // Create a new PDF document
       const doc = new jsPDF();
-
-      // Add a title to the PDF
       doc.text("User Reports", 14, 10);
-
-      // Add the table using autoTable
       doc.autoTable({
         head: [["Order Name", "Quantity", "Status"]],
         body: tableData,
-        startY: 20, // Y offset for the table
+        startY: 20,
       });
-
-      // Save the PDF
       doc.save("user-reports.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to download the PDF. Please try again.");
     }
+  };
+
+  // ApexCharts Data
+  const pieChartData = {
+    series: currentOrders.map((order) => order.totalQuantity),
+    options: {
+      chart: {
+        type: "pie",
+      },
+      labels: currentOrders.map((order) => order._id),
+      title: {
+        text: "Orders Quantity Distribution",
+        align: "center",
+        margin: 10,
+        style: {
+          fontSize: "18px",
+          fontWeight: "bold",
+        },
+      },
+    },
   };
 
   if (loading) {
@@ -171,6 +184,16 @@ const UserReports = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Pie Chart */}
+      <div className="mt-8">
+        <ReactApexChart
+          options={pieChartData.options}
+          series={pieChartData.series}
+          type="pie"
+          height={350}
+        />
       </div>
 
       {/* Download PDF Button */}

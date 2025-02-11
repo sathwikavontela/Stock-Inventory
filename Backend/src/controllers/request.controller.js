@@ -213,9 +213,6 @@ export {
   getApprovedRequests,
   getRequestFormsForFic,
   getRequestFormsForAuthority,
-<<<<<<< HEAD
   getDepartmentReportsForFic,
-=======
-  updateStatus
->>>>>>> 9110ed5e2205f606aaaead99262b62cee187209e
+  updateStatus,
 };

@@ -1,27 +1,3 @@
-<<<<<<< HEAD
-import { Outlet } from 'react-router-dom'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './Components/Home/Home'
-import LoginSignup from './Components/Login/LoginSignup'
-import RequestForm from './Components/Login/RequestForm'
-import About from './Components/About/About'
-import UserHome from './Components/User/UserHome'
-import Orders from './Components/User/Orders'
-import Reports from './Components/User/Reports'
-import ContactUs from './Components/Contact/ContactUs'
-import AuthorityHome from './Components/Authority/AuthorityHome'
-import AuthorityOrder from './Components/Authority/AuthorityOrder'
-import FICDept from './Components/FIC/FICDept'
-import ReturnForm from './Components/Login/ReturnForm'
-import FicHome from './Components/FIC/FicHome'
-import AddProduct from './Components/FIC/AddProduct'
-import AddDepartment from './Components/FIC/AddDepartment'
-import Requests from './Components/FIC/Requests.'
-import Returns from './Components/Authority/Returns'
-import AuthorityReports from './Components/Authority/Reports'
-
-import OrderDetails from './Components/Authority/OrderDetails'
-=======
 import { Outlet } from "react-router-dom";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./Components/Home/Home";
@@ -45,7 +21,6 @@ import Returns from "./Components/Authority/Returns";
 import AuthorityReports from "./Components/Authority/Reports";
 import ProductUpdateForm from "./Components/FIC/ProductUpdateForm";
 import OrderDetails from "./Components/Authority/OrderDetails";
->>>>>>> 189692a7f98574df137a6a40b52909c7c3359bf9
 
 import ViewSpecific from "./Components/User/ViewSpecific";
 import UpdateForm from "./Components/FIC/UpdateForm";
@@ -85,13 +60,8 @@ const appRouter = createBrowserRouter([
         element: <Orders />,
       },
       {
-<<<<<<< HEAD
-        path: '/orders/:orderId',
-        element:<ViewSpecific/>
-=======
         path: "/orders/:orderId",
         element: <ViewOrder />,
->>>>>>> 189692a7f98574df137a6a40b52909c7c3359bf9
       },
       {
         path: "/reports",
@@ -154,12 +124,16 @@ const appRouter = createBrowserRouter([
         element: <Requests />,
       },
       {
-        path: '/fic/update-product/:productId',
-        element: <UpdateForm/>,
+        path: "/fic/returns",
+        element: <Requests />,
       },
       {
-        path: '/authority/authority-orders/:orderId',
-        element: <AuthorityViewOrder />,
+        path: "/fic/update-product/:productId",
+        element: <ProductUpdateForm />,
+      },
+      {
+        path: "/authority/authority-orders/:orderId",
+        element: <OrderDetails />,
       },
     ],
   },
