@@ -52,7 +52,7 @@ const createDept = async (req, res) => {
 const getDepts = async (req, res) => {
   try {
     const departments = await User.find({});
-    console.log(departments);
+    // console.log(departments);
     if (!departments) {
       return res.status(400).json({ message: "No departments found" });
     }
@@ -118,7 +118,7 @@ const getApprovedProducts = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
     const userId = req.user._id
-    console.log("your logged in user id is",userId)
+    //console.log("your logged in user id is",userId)
     // Validate date range input
     if (!startDate || !endDate) {
       return res.status(400).json({ message: 'startDate and endDate are required query parameters.' });

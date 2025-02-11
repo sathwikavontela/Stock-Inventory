@@ -7,6 +7,7 @@ import requestRouter from './routes/request.routes.js'
 import returnRouter from './routes/return.routes.js'
 import authorityRouter from './routes/authority.routes.js'
 import ficRouter from './routes/fic.routes.js'
+
 const app = express() /// see meaning of this line
 
 const corsOptions = {
@@ -24,4 +25,5 @@ app.use('/api/v1/requests', requestRouter)
 app.use('/api/v1/returns', returnRouter)
 app.use('/api/v1/authority', authorityRouter)
 app.use('/api/v1/fic', ficRouter)
+
 export default app
