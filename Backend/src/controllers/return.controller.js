@@ -3,7 +3,7 @@ import { User } from "../models/user.model.js";
 
 const createReturnForm = async (req, res) => {
   const { items } = req.body;
-  console.log(items);
+  //console.log(items);
   const userId = req.user._id;
   try {
     if (!items || !userId) {
@@ -78,7 +78,7 @@ const updateStatus = async (req, res) => {
     }
     res.status(200).json({ message: "Status updated", return: updatedReturn });
   } catch (error) {
-    console.log(error.message);
+    //console.log(error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

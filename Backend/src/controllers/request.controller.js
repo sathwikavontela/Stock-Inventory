@@ -148,7 +148,7 @@ const getDepartmentReportsForFic = async (req, res) => {
 const getRequestFormById = async (req, res) => {
   try {
     const { orderId } = req.params;
-    console.log(orderId);
+    //console.log(orderId);
     const request = await RequestForm.findById(orderId).populate("userId");
     if (!request) {
       return res.status(400).json({ message: "Request not found" });
@@ -184,7 +184,7 @@ const getApprovedRequests = async (req, res) => {
 const updateStatus = async (req, res) => {
   try {
     const requestId = req.params.orderId;
-    console.log(requestId);
+    //console.log(requestId);
     const { status } = req.body;
     if (!status) {
       return res.status(400).json({ message: "status not found" });

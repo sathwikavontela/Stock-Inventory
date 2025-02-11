@@ -40,7 +40,7 @@ const getAllProducts = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   const { productId, name, description, quantity } = req.body
-  console.log(productId, name, description, quantity)
+  //console.log(productId, name, description, quantity)
 
   try {
     if (!productId || !name || !description || !quantity) {
@@ -69,7 +69,7 @@ const updateProduct = async (req, res) => {
       product: updatedProduct,
     })
   } catch (error) {
-    console.error('Error updating product:', error)
+    //console.error('Error updating product:', error)
     return res.status(500).json({
       error:
         'An error occurred while updating the product. Please try again later.',
@@ -93,7 +93,7 @@ const getProductById = async (req, res) => {
     //console.log(product)
     return res.status(200).json({ product: product })
   } catch (error) {
-    console.error('Error fetching product:', error)
+    //console.error('Error fetching product:', error)
     return res.status(500).json({
       error:
         'An error occurred while fetching the product. Please try again later.',
@@ -103,7 +103,7 @@ const getProductById = async (req, res) => {
 
 const getProductByName = async (req, res) => {
   const { productName } = req.params
-  console.log(productName)
+  //console.log(productName)
 
   try {
     if (!productName) {
@@ -117,7 +117,7 @@ const getProductByName = async (req, res) => {
     // console.log(product)
     return res.status(200).json({ product: product })
   } catch (error) {
-    console.error('Error fetching product:', error)
+    //console.error('Error fetching product:', error)
     return res.status(500).json({
       error:
         'An error occurred while fetching the product. Please try again later.',
