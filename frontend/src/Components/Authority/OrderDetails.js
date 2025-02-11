@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { BASE_URL } from '../helper';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { BASE_URL } from "../helper";
+import { useParams ,useNavigate} from "react-router-dom";
 
 const OrderDetails = () => {
   const { orderId } = useParams();
+  const navigate = useNavigate();
   const [request, setRequest] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [remarks, setRemarks] = useState(""); // State for optional remarks
 
   useEffect(() => {
     const fetchRequestDetails = async () => {
       try {
         const response = await fetch(
           `${BASE_URL}/api/v1/requests/getRequestById/${orderId}`,
-          { credentials: 'include' }
+          { credentials: "include" }
         );
         const data = await response.json();
         setRequest(data.request);
       } catch (error) {
-        console.error('Error fetching request details:', error);
+        console.error("Error fetching request details:", error);
       }
     };
 
@@ -33,14 +35,14 @@ const OrderDetails = () => {
         for (let item of request.items) {
           const productResponse = await fetch(
             `${BASE_URL}/api/v1/products/getProductByName/${item.item}`,
-            { credentials: 'include' }
+            { credentials: "include" }
           );
           const productData = await productResponse.json();
           productDetails[item._id] = productData.product || {};
         }
         setProducts(productDetails);
       } catch (error) {
-        console.error('Error fetching product details:', error);
+        console.error("Error fetching product details:", error);
       }
     };
 
@@ -55,7 +57,7 @@ const OrderDetails = () => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status, remarks }), // Include remarks if provided
       });
       if (!response.ok) {
         const error = await response.text();
@@ -64,12 +66,14 @@ const OrderDetails = () => {
       const data = await response.json();
       setRequest((prevRequest) => ({ ...prevRequest, status: data.data.status }));
       alert("Request status updated successfully!");
+      setRemarks(""); // Reset remarks after submission
+      navigate('/authority/authority-orders');
+      
     } catch (error) {
       console.error("Error updating status:", error);
       alert(`Error: ${error.message}`);
     }
   };
-  
 
   if (!request) {
     return <div>Loading request details...</div>;
@@ -124,24 +128,35 @@ const OrderDetails = () => {
         ))}
       </div>
 
+      <div className="mt-4">
+        <label className="block text-sm font-semibold text-purple-700 mb-2">Remarks (optional):</label>
+        <textarea
+          value={remarks}
+          onChange={(e) => setRemarks(e.target.value)}
+          rows="4"
+          className="w-full px-4 py-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+          placeholder="Add remarks here if necessary..."
+        ></textarea>
+      </div>
+
       <div className="mt-8 flex justify-center gap-6">
         <button
           className="bg-green-500 text-white py-3 px-6 rounded-md shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all"
-          onClick={() => handleSubmit('Approved')}
+          onClick={() => handleSubmit("Approved")}
           disabled={loading}
         >
-          {loading ? 'Processing...' : 'Approve Request'}
+          {loading ? "Processing..." : "Approve Request"}
         </button>
         <button
           className="bg-red-500 text-white py-3 px-6 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition-all"
-          onClick={() => handleSubmit('Rejected')}
+          onClick={() => handleSubmit("Rejected")}
           disabled={loading}
         >
-          {loading ? 'Processing...' : 'Reject Request'}
+          {loading ? "Processing..." : "Reject Request"}
         </button>
       </div>
     </div>
   );
 };
 
-export default OrderDetails
+export default OrderDetails;

@@ -185,13 +185,16 @@ const updateStatus = async (req, res) => {
   try {
     const requestId = req.params.orderId;
     //console.log(requestId);
-    const { status } = req.body;
+    const { status,remarks } = req.body;
     if (!status) {
       return res.status(400).json({ message: "status not found" });
     }
+    // if (remarks) {
+    //   console.log(`Remarks provided: ${remarks}`);
+    // }
     const updatedRequest = await RequestForm.findByIdAndUpdate(
       requestId,
-      { status },
+      { status, ...(remarks && { remarks }) }, 
       { new: true, runValidators: true }
     );
     if (!updatedRequest) {
