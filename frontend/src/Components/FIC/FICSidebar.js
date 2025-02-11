@@ -9,10 +9,13 @@ const FICSidebar = () => {
           <Link to="/fic/add-product">Add New Item</Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded">
+          <Link to="/fic/add-department">Add new Department</Link>
+        </li>
+        <li className="hover:bg-gray-700 p-2 rounded">
           <Link to="/fic/requests">Requests</Link>
         </li>
         <li className="hover:bg-gray-700 p-2 rounded">
-          <Link to="/fic/add-department">Add new Department</Link>
+          <Link to="/fic/returns">Returns</Link>
         </li>
         {/* <li className="hover:bg-gray-700 p-2 rounded">
           <Link to="/reports">Reports</Link>

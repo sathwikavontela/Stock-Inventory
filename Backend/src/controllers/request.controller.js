@@ -59,19 +59,12 @@ const getRequestForms = async (req, res) => {
 const getRequestFormsForFic = async (req, res) => {
   try {
     // console.log("dfhdjdd");
-    const userId = req.user._id;
     //console.log(userId);
-    if (!userId) {
-      return res.status(400).json({ message: "user not authorised" });
-    }
-    const user = await FIC.findById(userId);
-    if (!user) {
-      return res.status(400).json({ message: "user not found" });
-    }
     const requests = await RequestForm.find({});
     if (!requests) {
       return res.status(400).json({ message: "Error while fetching requests" });
     }
+    requests.reverse();
     //console.log(requests)
     return res.status(200).json({ requests });
   } catch (error) {
@@ -115,6 +108,40 @@ const getRequestsForDepartments = async (req, res) => {
     return res.status(200).json({ requests });
   } catch (error) {
     return res.status(200).json({ error: error.message });
+  }
+};
+
+const getDepartmentReportsForFic = async (req, res) => {
+  const { id } = req.params; // Get department ID from route params
+
+  try {
+    // Fetch reports from the database, including only the necessary fields
+    const reports = await RequestForm.find({ userId: id })
+      .select("items status") // Select only the 'items' and 'status' fields
+      .lean(); // .lean() returns plain JavaScript objects for better performance
+
+    if (!reports || reports.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No reports found for this department." });
+    }
+
+    // Map through the reports and format the items array
+    const formattedReports = reports.map((report) => {
+      return {
+        status: report.status,
+        items: report.items.map((item) => ({
+          itemName: item.item, // Item name
+          quantity: item.quantity, // Quantity
+          approved: item.status === "Approved", // Approval status based on item status
+        })),
+      };
+    });
+
+    res.status(200).json({ reports: formattedReports });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error. Could not fetch reports." });
   }
 };
 
@@ -186,5 +213,6 @@ export {
   getApprovedRequests,
   getRequestFormsForFic,
   getRequestFormsForAuthority,
-  updateStatus
+  getDepartmentReportsForFic,
+  updateStatus,
 };

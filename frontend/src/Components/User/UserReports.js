@@ -2,42 +2,28 @@ import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../helper";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import ReactApexChart from "react-apexcharts";
 
 const UserReports = () => {
   const [orders, setOrders] = useState([]);
-  const [filteredOrders, setFilteredOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [startDate, setStartDate] = useState(""); // For calendar start date
-  const [endDate, setEndDate] = useState(""); // For calendar end date
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const ordersPerPage = 10;
 
-  // Fetch all orders initially
-  useEffect(() => {
-    fetchApprovedRequests();
-  }, []);
-
-  // Filter orders when dates are updated
   useEffect(() => {
     if (startDate && endDate) {
-      const filtered = orders.filter((order) => {
-        const orderDate = new Date(order.date); // Replace `order.date` with the actual date field
-        return (
-          orderDate >= new Date(startDate) && orderDate <= new Date(endDate)
-        );
-      });
-      setFilteredOrders(filtered);
-    } else {
-      setFilteredOrders(orders); // Reset to all orders if no filters are applied
+      fetchApprovedRequests();
     }
-  }, [startDate, endDate, orders]);
+  }, [startDate, endDate]);
 
   const fetchApprovedRequests = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${BASE_URL}/api/v1/users/get/approved/items`,
+        `${BASE_URL}/api/v1/users/get/approved/items?startDate=${startDate}&endDate=${endDate}`,
         {
           method: "GET",
           headers: {
@@ -47,12 +33,12 @@ const UserReports = () => {
         }
       );
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         throw new Error(`${response.status} - ${response.statusText}`);
       }
       setOrders(data.products);
-      setFilteredOrders(data.products);
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -60,7 +46,7 @@ const UserReports = () => {
     }
   };
 
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -76,39 +62,48 @@ const UserReports = () => {
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(
-    indexOfFirstOrder,
-    indexOfLastOrder
-  );
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
 
   const downloadPDF = async () => {
     try {
       const tableData = currentOrders.map((order) => [
-        order._id, // Order Name
-        order.totalQuantity, // Quantity
-        "Approved", // Status
+        order._id,
+        order.totalQuantity,
+        "Approved",
       ]);
 
       const doc = new jsPDF();
       doc.text("User Reports", 14, 10);
-      if (startDate || endDate) {
-        doc.text(
-          `Date Range: ${startDate || "N/A"} - ${endDate || "N/A"}`,
-          14,
-          20
-        );
-      }
       doc.autoTable({
         head: [["Order Name", "Quantity", "Status"]],
         body: tableData,
-        startY: 30,
+        startY: 20,
       });
-
       doc.save("user-reports.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to download the PDF. Please try again.");
     }
+  };
+
+  // ApexCharts Data
+  const pieChartData = {
+    series: currentOrders.map((order) => order.totalQuantity),
+    options: {
+      chart: {
+        type: "pie",
+      },
+      labels: currentOrders.map((order) => order._id),
+      title: {
+        text: "Orders Quantity Distribution",
+        align: "center",
+        margin: 10,
+        style: {
+          fontSize: "18px",
+          fontWeight: "bold",
+        },
+      },
+    },
   };
 
   if (loading) {
@@ -189,6 +184,16 @@ const UserReports = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Pie Chart */}
+      <div className="mt-8">
+        <ReactApexChart
+          options={pieChartData.options}
+          series={pieChartData.series}
+          type="pie"
+          height={350}
+        />
       </div>
 
       {/* Download PDF Button */}
