@@ -6,6 +6,9 @@ import FICSidebar from "./FICSidebar";
 const FICRequests = () => {
   const [approvedRequests, setApprovedRequests] = useState([]);
   const [rejectedRequests, setRejectedRequests] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [requestsPerPage] = useState(5); // Requests per page
+  const [viewType, setViewType] = useState("Approved"); // Toggle Approved/Rejected
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -21,7 +24,6 @@ const FICRequests = () => {
       }
       const data = await response.json();
 
-      // Assuming the response has a key "requests" that contains the array
       if (Array.isArray(data.requests)) {
         const approved = data.requests.filter(
           (request) => request.status === "Approved"
@@ -30,8 +32,8 @@ const FICRequests = () => {
           (request) => request.status === "Rejected"
         );
 
-        setApprovedRequests(approved); // Set approved requests state
-        setRejectedRequests(rejected); // Set rejected requests state
+        setApprovedRequests(approved);
+        setRejectedRequests(rejected);
       } else {
         throw new Error("Expected 'requests' to be an array.");
       }
@@ -47,84 +49,203 @@ const FICRequests = () => {
     fetchRequests();
   }, []);
 
+  // Handle pagination
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Determine which requests to show based on viewType and pagination
+  const requestsToShow =
+    viewType === "Approved"
+      ? approvedRequests
+      : rejectedRequests;
+
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+  const currentRequests = requestsToShow.slice(
+    indexOfFirstRequest,
+    indexOfLastRequest
+  );
+
+  const totalPages = Math.ceil(requestsToShow.length / requestsPerPage);
+
   return (
     <>
       <FICHeader />
-      <div className="pt-16 h-[100vh] flex">
-        <FICSidebar className="fixed h-[100%]" />
-        <div className="flex justify-center items-center flex-grow">
-          <div className="w-full max-w-6xl p-6">
-            <h2 className="text-2xl font-semibold text-center mb-6 text-[#b14ae8]">
-              Approved and Rejected Requests
-            </h2>
-
+      <div className=" pt-16 h-[100vh] flex bg-[#f8f9fa]">
+        <FICSidebar className=" fixed h-[100%]" />
+        <div className="flex justify-center items-start flex-grow">
+          <div className="w-full max-w-6xl p-6 bg-white shadow-lg rounded-lg mt-5">
             {/* Loading state */}
-            {loading && <p>Loading...</p>}
+            {loading && (
+              <p className="text-center text-blue-500 font-semibold">
+                Loading...
+              </p>
+            )}
 
             {/* Error message */}
-            {error && <p className="text-red-600">{error}</p>}
+            {error && (
+              <p className="text-center text-red-600 font-semibold">{error}</p>
+            )}
 
-            {/* Display approved requests */}
-            <div className="mb-6">
-              <h3 className="text-xl font-bold text-[#b14ae8]">
+            {/* Toggle Buttons for Approved/Rejected */}
+            <div className="mb-6 flex justify-center space-x-4">
+              <button
+                className={`px-4 py-2 rounded-lg ${
+                  viewType === "Approved"
+                    ? "bg-[#4171d8] text-white"
+                    : "bg-gray-200"
+                }`}
+                onClick={() => setViewType("Approved")}
+              >
                 Approved Requests
-              </h3>
-              {approvedRequests.length > 0 ? (
-                <table className="min-w-full table-auto border-collapse border border-gray-300 mt-4">
-                  <thead>
-                    <tr className="bg-[#b14ae8] text-white">
-                      <th className="py-2 px-4">Request ID</th>
-                      <th className="py-2 px-4">Items</th>
-                      <th className="py-2 px-4">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {approvedRequests.map((request) => (
-                      <tr key={request._id} className="border-b">
-                        <td className="py-2 px-4">{request._id}</td>
-                        <td className="py-2 px-4">
-                          {request.items.map((item) => item.item).join(", ")}
-                        </td>
-                        <td className="py-2 px-4">{request.status}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>No approved requests found.</p>
-              )}
+              </button>
+              <button
+                className={`px-4 py-2 rounded-lg ${
+                  viewType === "Rejected"
+                    ? "bg-[#4171d8] text-white"
+                    : "bg-gray-200"
+                }`}
+                onClick={() => setViewType("Rejected")}
+              >
+                Rejected Requests
+              </button>
             </div>
 
-            {/* Display rejected requests */}
-            <div>
-              <h3 className="text-xl font-bold text-[#b14ae8]">
-                Rejected Requests
-              </h3>
-              {rejectedRequests.length > 0 ? (
-                <table className="min-w-full table-auto border-collapse border border-gray-300 mt-4">
-                  <thead>
-                    <tr className="bg-[#b14ae8] text-white">
-                      <th className="py-2 px-4">Request ID</th>
-                      <th className="py-2 px-4">Items</th>
-                      <th className="py-2 px-4">Status</th>
+            {/* Requests Table */}
+            {currentRequests.length > 0 ? (
+              <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        viewType === "Rejected"
+                          ? "bg-gradient-to-r from-[#b14ae8] to-[#a646d3]"
+                          : "bg-gradient-to-r from-[#4171d8] to-[#395ebf]"
+                      } text-white`}
+                    >
+                      Request ID
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        viewType === "Rejected"
+                          ? "bg-gradient-to-r from-[#b14ae8] to-[#a646d3]"
+                          : "bg-gradient-to-r from-[#4171d8] to-[#395ebf]"
+                      } text-white`}
+                    >
+                      Items
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        viewType === "Rejected"
+                          ? "bg-gradient-to-r from-[#b14ae8] to-[#a646d3]"
+                          : "bg-gradient-to-r from-[#4171d8] to-[#395ebf]"
+                      } text-white`}
+                    >
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {currentRequests.map((request, index) => (
+                    <tr
+                      key={request._id}
+                      className={`hover:bg-gray-100 ${
+                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      }`}
+                    >
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                        {request._id}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {request.items.map((item) => item.item).join(", ")}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {request.status}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {rejectedRequests.map((request) => (
-                      <tr key={request._id} className="border-b">
-                        <td className="py-2 px-4">{request._id}</td>
-                        <td className="py-2 px-4">
-                          {request.items.map((item) => item.item).join(", ")}
-                        </td>
-                        <td className="py-2 px-4">{request.status}</td>
-                      </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* Pagination Controls */}
+              {requestsToShow.length > requestsPerPage && (
+                <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`${
+                      currentPage === 1 ? "bg-gray-300" : "bg-[#b14ae8] text-white"
+                    } px-3 py-1 mx-1 rounded-lg`}
+                  >
+                    Previous
+                  </button>
+                  <div className="hidden sm:flex sm:items-center">
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <button
+                        key={i + 1}
+                        onClick={() => handlePageChange(i + 1)}
+                        className={`px-3 py-1 mx-1 rounded-lg ${
+                          currentPage === i + 1
+                            ? "bg-[#b14ae8] text-white"
+                            : "bg-gray-200"
+                        }`}
+                      >
+                        {i + 1}
+                      </button>
                     ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>No rejected requests found.</p>
+                  </div>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`${
+                      currentPage === totalPages ? "bg-gray-300" : "bg-[#b14ae8] text-white"
+                    } px-3 py-1 mx-1 rounded-lg`}
+                  >
+                    Next
+                  </button>
+                </div>
               )}
             </div>
+            
+            ) : (
+              <p className="text-gray-500 italic">
+                No {viewType.toLowerCase()} requests found.
+              </p>
+            )}
+
+            {/* Pagination Controls */}
+            {requestsToShow.length > requestsPerPage && (
+              <div className="flex justify-center mt-4">
+                <button
+                  className="px-3 py-1 mx-1 bg-gray-200 rounded-lg"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    className={`px-3 py-1 mx-1 rounded-lg ${
+                      currentPage === i + 1
+                        ? "bg-[#b14ae8] text-white"
+                        : "bg-gray-200"
+                    }`}
+                    onClick={() => handlePageChange(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  className="px-3 py-1 mx-1 bg-gray-200 rounded-lg"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
