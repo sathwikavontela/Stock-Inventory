@@ -2,146 +2,156 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BASE_URL } from "../helper";
 import jsPDF from "jspdf";
+import "jspdf-autotable";
+import ReactApexChart from "react-apexcharts";
 
 const FICDeptReports = () => {
-  const { deptId } = useParams(); // Get department ID from URL
-  const [reports, setReports] = useState([]); // To store reports
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const { deptId } = useParams();
+  const [reports, setReports] = useState([]);
+  const [filteredReports, setFilteredReports] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
         const response = await fetch(
           `${BASE_URL}/api/v1/requests/getRequestsByDepartmentForFic/${deptId}`,
-          {
-            credentials: "include", // Include cookies if needed
-          }
+          { credentials: "include" }
         );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch reports");
-        }
-
+        if (!response.ok) throw new Error("Failed to fetch reports");
         const data = await response.json();
-
-        if (data.reports && data.reports.length > 0) {
-          setReports(data.reports); // Assuming response contains a `reports` array
-        } else {
-          setReports([]); // If no reports are available, set an empty array
-        }
+        console.log(data.reports);
+        setReports(data.reports || []);
+        setFilteredReports(data.reports || []);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchReports();
   }, [deptId]);
 
+  const filterReports = () => {
+    if (startDate && endDate) {
+      const filtered = reports.filter(
+        (report) =>
+          new Date(report.createdAt) >= new Date(startDate) &&
+          new Date(report.createdAt) <= new Date(endDate)
+      );
+      setFilteredReports(filtered);
+    }
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
-
-    doc.setFontSize(18);
-    doc.text(`Reports for Department ID: ${deptId}`, 14, 20);
-
-    let y = 30;
-    doc.setFontSize(12);
-
-    // Add table headers
-    doc.text("Status", 14, y);
-    doc.text("Item Name", 60, y);
-    doc.text("Quantity", 120, y);
-    doc.text("Approval Status", 160, y);
-    y += 10;
-
-    // Add the reports data
-    reports.forEach((report) => {
-      report.items.forEach((item) => {
-        doc.text(report.status, 14, y);
-        doc.text(item.itemName, 60, y);
-        doc.text(String(item.quantity), 120, y);
-        doc.text(item.approved ? "Approved" : "Not Approved", 160, y);
-        y += 10;
-      });
+    doc.text(`Reports for Department ID: ${deptId}`, 14, 10);
+    doc.autoTable({
+      head: [["Item Name", "Quantity", "Status", "Date"]],
+      body: filteredReports.flatMap((report) =>
+        report.items.map((item) => [
+          item.itemName,
+          item.quantity,
+          report.status,
+          new Date(report.createdAt).toLocaleDateString(),
+        ])
+      ),
     });
-
-    // Save PDF
     doc.save(`department-report-${deptId}.pdf`);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <p>Loading reports...</p>
-      </div>
-    );
-  }
+  const generatePieChartData = () => {
+    const itemCounts = {};
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <p className="text-red-600">Error: {error}</p>
-      </div>
-    );
-  }
+    filteredReports.forEach((report) => {
+      report.items.forEach((item) => {
+        if (itemCounts[item.itemName]) {
+          itemCounts[item.itemName] += item.quantity;
+        } else {
+          itemCounts[item.itemName] = item.quantity;
+        }
+      });
+    });
+
+    return {
+      series: Object.values(itemCounts),
+      options: {
+        chart: { type: "pie" },
+        labels: Object.keys(itemCounts),
+        title: { text: "Item Distribution by Quantity", align: "center" },
+      },
+    };
+  };
+
+  const pieChartData = generatePieChartData();
+
+  if (loading) return <div>Loading reports...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
-      <div className="bg-white p-8 rounded-lg shadow-xl">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-          Reports for Department: {deptId}
-        </h2>
-        {reports.length > 0 ? (
-          <div>
-            {/* Button to Generate PDF */}
-            <button
-              onClick={generatePDF}
-              className="bg-purple-600 text-white px-6 py-2 rounded-lg shadow-md mb-6"
-            >
-              Download Reports as PDF
-            </button>
-
-            {/* Table to Display Reports */}
-            <table className="min-w-full table-auto border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Status
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Item Name
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Quantity
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {reports.map((report, index) => (
-                  <React.Fragment key={index}>
-                    {report.items.map((item, idx) => (
-                      <tr key={idx} className="border-b border-gray-200">
-                        <td className="border border-gray-300 px-4 py-2">
-                          {item.itemName}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {item.quantity}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {report.status}
-                        </td>
-                      </tr>
-                    ))}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-500">No reports found for this department.</p>
-        )}
+    <div className="container mx-auto p-6">
+      <h2 className="text-xl font-bold mb-4">
+        Reports for Department: {deptId}
+      </h2>
+      <div className="mb-4">
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="border p-2 mr-2"
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="border p-2 mr-2"
+        />
+        <button
+          onClick={filterReports}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
+          Filter
+        </button>
+        <button
+          onClick={generatePDF}
+          className="bg-green-500 text-white p-2 rounded ml-2"
+        >
+          Download PDF
+        </button>
+      </div>
+      <table className="min-w-full bg-white border border-gray-300">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="border p-2">Item Name</th>
+            <th className="border p-2">Quantity</th>
+            <th className="border p-2">Status</th>
+            <th className="border p-2">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredReports.map((report) =>
+            report.items.map((item, idx) => (
+              <tr key={idx} className="border-b">
+                <td className="border p-2">{item.itemName}</td>
+                <td className="border p-2">{item.quantity}</td>
+                <td className="border p-2">{report.status}</td>
+                <td className="border p-2">
+                  {new Date(report.createdAt).toLocaleDateString()}
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+      <div className="mt-6">
+        <ReactApexChart
+          options={pieChartData.options}
+          series={pieChartData.series}
+          type="pie"
+        />
       </div>
     </div>
   );
