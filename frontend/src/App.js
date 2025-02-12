@@ -25,6 +25,9 @@ import ProductUpdateForm from './Components/FIC/ProductUpdateForm'
 import OrderDetails from './Components/Authority/OrderDetails'
 import ProductUpdate from './Components/FIC/ProductUpdate'
 import AuthorityProtected from './Components/ProtectedRoutes/AuthorityProtected'
+import FicProtected from './Components/ProtectedRoutes/FicProtected'
+import UserProtected from './Components/ProtectedRoutes/UserProtected'
+import AuthorityDeptReports from './Components/Authority/AuthorityDeptReports'
 
 const Applayout = () => {
   return (
@@ -68,7 +71,7 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/user-Home",
-        element: <UserHome />,
+        element: <UserProtected element={UserHome} />,
       },
       {
         path: "/contact-us",
@@ -76,7 +79,7 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/authority-home",
-        element: <AuthorityHome />,
+        element: <AuthorityProtected element={AuthorityHome} />,
       },
       {
         path: "/authority/authority-orders",
@@ -92,7 +95,7 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/user-returnform",
-        element: <ReturnForm />,
+        element:<UserProtected element={ReturnForm}/>
       },
       {
         path: "/contact-us",
@@ -100,40 +103,44 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/fic-home",
-        element: <FicHome />,
+        element: <FicProtected element={FicHome} />,
       },
       {
         path: "/fic-reports",
-        element: <FICDept />,
+        element: <FicProtected element={FICDept} />,
       },
       {
         path: "/fic-reports/:deptId",
-        element: <FICDeptReports />,
+        element:<FicProtected element={FICDeptReports}/>
       },
       {
         path: "/fic/add-product",
-        element: <AddProduct />,
+        element:<FicProtected element={AddProduct}/>
       },
       {
         path: "/fic/add-department",
-        element: <AddDepartment />,
+        element:<FicProtected element={AddDepartment}/>
       },
       {
         path: "/fic/requests",
-        element: <Requests />,
+        element:<FicProtected element={Requests}/>
       },
       {
         path: "/fic/returns",
-        element: <Requests />,
+        element:<FicProtected element={Returns} />,
       },
       {
         path: "/fic/update-product/:productId",
-        element: <ProductUpdate/>,
+        element:<FicProtected element={ProductUpdate}/>
       },
       {
         path: "/authority/authority-orders/:orderId",
-        element: <OrderDetails />,
+        element:<AuthorityProtected element={OrderDetails}/>
       },
+      {
+        path: "/authority/reports/:departmentId",
+        element:<AuthorityProtected element={AuthorityDeptReports}/>
+      }
     ],
   },
 ]);

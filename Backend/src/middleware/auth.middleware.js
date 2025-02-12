@@ -4,17 +4,13 @@ import { Authority } from "../models/authority.model.js";
 import { FIC } from "../models/fic.model.js";
 
 export const verifyJwt = (req, res, next) => {
-  console.log(req);
   const token = req.cookies.departmentToken;
-  console.log(token);
-  // console.log(token)
+  
   if (!token) {
     return res.status(401).json({ message: "Unauthorized request" });
   }
   try {
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    //console.log(decodedToken)
-
     // Find the user by the decoded token's ID, and exclude password and refreshToken
     User.findById(decodedToken?._id)
       .then((loggedInUser) => {
@@ -23,7 +19,6 @@ export const verifyJwt = (req, res, next) => {
         }
 
         req.user = loggedInUser; // Attach the user to the request object
-        //console.log(req.user);
         next(); // Proceed to the next middleware or route handler
       })
       .catch((error) => {

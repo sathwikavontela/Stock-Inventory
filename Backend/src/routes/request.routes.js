@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createRequestForm,
   getApprovedRequests,
+  getDepartmentReportsForAuthoritys,
   getDepartmentReportsForFic,
   getRequestFormById,
   getRequestForms,
@@ -31,6 +32,7 @@ router
 router
   .route("/getRequestsByDepartmentForFic/:id")
   .get(verifyFic, getDepartmentReportsForFic);
+router.route("/getRequestsByDepartmentForAuthority/:departmentId").get(verifyAuthority, getDepartmentReportsForAuthoritys);
 router
   .route("/getApprovedRequestsByDepartment")
   .get(verifyJwt, getApprovedRequests);

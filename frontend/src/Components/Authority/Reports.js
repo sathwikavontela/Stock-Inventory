@@ -13,7 +13,7 @@ const UserReports = () => {
     // Fetch departments from the backend API
     const fetchDepartments = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/v1/users/getDepts`, {
+        const response = await fetch(`${BASE_URL}/api/v1/authority/getDepts`, {
           credentials: "include", // To include cookies if required
         });
 
@@ -37,7 +37,7 @@ const UserReports = () => {
 
   const handleDepartmentClick = (departmentId) => {
     // Navigate to a dynamic route using department ID
-    navigate(`/fic-reports/${departmentId}`);
+    navigate(`/authority/reports/${departmentId}`);
   };
 
   if (loading) {
