@@ -13,60 +13,64 @@ const LoginSignup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = `${BASE_URL}/api/v1/authority/login`;
-    const data1 = {
-      username: username,
-      password: password,
-    };
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(data1),
-    });
-    if (!response.ok) {
-      throw new Error("Login failed");
+    try {
+      const url = `${BASE_URL}/api/v1/authority/login`;
+      const data1 = {
+        username: username,
+        password: password,
+      };
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data1),
+      });
+      if (!response.ok) {
+        alert("Login failed");
+      }
+      const data = await response.json();
+      console.log(data);
+      // setIsLoading(false);
+      const member = data.member;
+      if (member.username.startsWith("authority")) {
+        localStorage.setItem("authority", JSON.stringify(member));
+        document.cookie = `authorityToken=${data.authorityToken}; Secure; SameSite=None; Path=/`;
+        Cookies.set("Authority_jwt_token", data.authorityToken, {
+          expires: 100000000,
+        });
+        //toast.success("logged in successfully");
+        setTimeout(() => {
+          navigate("/authority-home");
+        }, 1000);
+      } else if (member.username.startsWith("fic")) {
+        localStorage.setItem("fic", JSON.stringify(member));
+        document.cookie = `ficToken=${data.ficToken}; Secure; SameSite=None; Path=/`;
+        Cookies.set("Fic_jwt_token", data.ficToken, {
+          expires: 100000000,
+        });
+        //toast.success("logged in successfully");
+        setTimeout(() => {
+          navigate("/fic-home");
+        }, 1000);
+      } else {
+        localStorage.setItem("department", JSON.stringify(member));
+        document.cookie = `departmentToken=${data.departmentToken}; Secure; SameSite=None; Path=/`;
+        Cookies.set("Department_jwt_token", data.departmentToken, {
+          expires: 100000000,
+        });
+        // toast.success(" logged in successfully");
+        setTimeout(() => {
+          navigate("/user-Home");
+        }, 1000);
+      }
+      // document.cookie = `accessToken=${responseObj.accessToken}; Secure; SameSite=None; Path=/`
+      // console.log(responseObj.accessToken)
+      // navigate('/user-Home')
+    } catch (error) {
+      alert(error.message);
     }
-    const data = await response.json();
-    console.log(data);
-    // setIsLoading(false);
-    const member = data.member;
-    if (member.username.startsWith("authority")) {
-      localStorage.setItem("authority", JSON.stringify(member));
-      document.cookie = `authorityToken=${data.authorityToken}; Secure; SameSite=None; Path=/`;
-      Cookies.set("Authority_jwt_token", data.authorityToken, {
-        expires: 100000000,
-      });
-      //toast.success("logged in successfully");
-      setTimeout(() => {
-        navigate("/authority-home");
-      }, 1000);
-    } else if (member.username.startsWith("fic")) {
-      localStorage.setItem("fic", JSON.stringify(member));
-      document.cookie = `ficToken=${data.ficToken}; Secure; SameSite=None; Path=/`;
-      Cookies.set("Fic_jwt_token", data.ficToken, {
-        expires: 100000000,
-      });
-      //toast.success("logged in successfully");
-      setTimeout(() => {
-        navigate("/fic-home");
-      }, 1000);
-    } else {
-      localStorage.setItem("department", JSON.stringify(member));
-      document.cookie = `departmentToken=${data.departmentToken}; Secure; SameSite=None; Path=/`;
-      Cookies.set("Department_jwt_token", data.departmentToken, {
-        expires: 100000000,
-      });
-      // toast.success(" logged in successfully");
-      setTimeout(() => {
-        navigate("/user-Home");
-      }, 1000);
-    }
-    // document.cookie = `accessToken=${responseObj.accessToken}; Secure; SameSite=None; Path=/`
-    // console.log(responseObj.accessToken)
-    // navigate('/user-Home')
   };
 
   return (

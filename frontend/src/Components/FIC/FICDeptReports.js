@@ -39,8 +39,9 @@ const FICDeptReports = () => {
     if (startDate && endDate) {
       const filtered = reports.filter(
         (report) =>
-          new Date(report.createdAt) >= new Date(startDate) &&
-          new Date(report.createdAt) <= new Date(endDate)
+          new Date(report.createdAt).getTime() >=
+            new Date(startDate).getTime() &&
+          new Date(report.createdAt).getTime() <= new Date(endDate).getTime()
       );
       setFilteredReports(filtered);
     }
@@ -139,7 +140,7 @@ const FICDeptReports = () => {
                 <td className="border p-2">{item.quantity}</td>
                 <td className="border p-2">{report.status}</td>
                 <td className="border p-2">
-                  {new Date(report.createdAt).toLocaleDateString()}
+                  {new Date(report.createdAt).toLocaleDateString("en-GB")}
                 </td>
               </tr>
             ))

@@ -82,15 +82,32 @@ const UserReports = () => {
     doc.save("user-reports.pdf");
   };
 
+  const aggregateItemQuantities = () => {
+    const itemMap = new Map();
+
+    filteredOrders.forEach((order) => {
+      order.items.forEach((item) => {
+        if (itemMap.has(item.name)) {
+          itemMap.set(item.name, itemMap.get(item.name) + item.quantity);
+        } else {
+          itemMap.set(item.name, item.quantity);
+        }
+      });
+    });
+
+    return {
+      labels: Array.from(itemMap.keys()),
+      series: Array.from(itemMap.values()),
+    };
+  };
+
+  const aggregatedData = aggregateItemQuantities();
+
   const pieChartData = {
-    series: filteredOrders.map((order) =>
-      order.items.reduce((sum, i) => sum + i.quantity, 0)
-    ),
+    series: aggregatedData.series,
     options: {
       chart: { type: "pie" },
-      labels: filteredOrders.map((order) =>
-        order.items.map((i) => i.name).join(", ")
-      ),
+      labels: aggregatedData.labels,
       title: { text: "Orders Quantity Distribution", align: "center" },
     },
   };

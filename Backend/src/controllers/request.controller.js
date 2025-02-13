@@ -117,8 +117,9 @@ const getDepartmentReportsForFic = async (req, res) => {
   try {
     // Fetch reports from the database, including only the necessary fields
     const reports = await RequestForm.find({ userId: id })
-      .select("items status") // Select only the 'items' and 'status' fields
+      .select("items status createdAt") // Select only the 'items' and 'status' fields
       .lean(); // .lean() returns plain JavaScript objects for better performance
+    console.log(reports);
 
     if (!reports || reports.length === 0) {
       return res
@@ -130,6 +131,7 @@ const getDepartmentReportsForFic = async (req, res) => {
     const formattedReports = reports.map((report) => {
       return {
         status: report.status,
+        createdAt: report.createdAt,
         items: report.items.map((item) => ({
           itemName: item.item, // Item name
           quantity: item.quantity, // Quantity
@@ -185,7 +187,7 @@ const updateStatus = async (req, res) => {
   try {
     const requestId = req.params.orderId;
     //console.log(requestId);
-    const { status,remarks } = req.body;
+    const { status, remarks } = req.body;
     if (!status) {
       return res.status(400).json({ message: "status not found" });
     }
@@ -194,7 +196,7 @@ const updateStatus = async (req, res) => {
     // }
     const updatedRequest = await RequestForm.findByIdAndUpdate(
       requestId,
-      { status, ...(remarks && { remarks }) }, 
+      { status, ...(remarks && { remarks }) },
       { new: true, runValidators: true }
     );
     if (!updatedRequest) {
