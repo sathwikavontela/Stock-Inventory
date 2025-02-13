@@ -113,4 +113,13 @@ const logout = async (req, res) => {
     .json({ message: "Logged out successfully" });
 };
 
-export { createAuthority, loginAuthority, logout };
+const getDepts = async (req, res) => {
+  try {
+    const departments = await Authority.find();
+    return res.status(200).json({ departments });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+export { createAuthority, loginAuthority, logout, getDepts};

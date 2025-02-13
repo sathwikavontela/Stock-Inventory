@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Stocklogo from "../utils/Stocklogo.png";
 import Cookie from "js-cookie";
 import { BASE_URL } from "../helper";
+import Cookies from "js-cookie";
 
 const UserHeader = () => {
   const navigate = useNavigate();
@@ -20,8 +21,12 @@ const UserHeader = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+      console.log("removing everything")
+      document.cookie = "departmentToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; Secure; SameSite=None";
       localStorage.removeItem("department");
-      Cookie.remove("department_jwt_token");
+      Cookies.remove("Department_jwt_token");
+      console.log("your document cokes is",document.cookie);
+
       //toast.success("User logged out successfully");
       setTimeout(() => {
         navigate("/");

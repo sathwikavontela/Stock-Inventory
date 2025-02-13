@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Stocklogo from "../utils/Stocklogo.png";
 import { BASE_URL } from "../helper";
-
+import Cookies from "js-cookie";
 const UserHeader = () => {
   const navigate = useNavigate();
 
@@ -22,6 +22,9 @@ const UserHeader = () => {
 
       // Optional: Clear localStorage or any stored user state
       localStorage.removeItem("department");
+      localStorage.removeItem("authority");
+      Cookies.remove("Authority_jwt_token");
+      document.cookie = "authorityToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; Secure; SameSite=None";
 
       // Redirect to the login page or homepage
       navigate("/");

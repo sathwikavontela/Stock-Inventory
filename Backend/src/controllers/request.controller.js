@@ -210,6 +210,42 @@ const updateStatus = async (req, res) => {
   }
 };
 
+
+const getDepartmentReportsForAuthoritys = async (req, res) => {
+  const { departmentId } = req.params; // Get department ID from route params
+  console.log("got the request with the params", departmentId);
+  try {
+    // Fetch reports from the database, including only the necessary fields
+    const reports = await RequestForm.find({ userId: departmentId })
+      .select("items status") // Select only the 'items' and 'status' fields
+      .lean(); // .lean() returns plain JavaScript objects for better performance
+
+    if (!reports || reports.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No reports found for this department." });
+    }
+
+    // Map through the reports and format the items array
+    const formattedReports = reports.map((report) => {
+      return {
+        status: report.status,
+        items: report.items.map((item) => ({
+          itemName: item.item, // Item name
+          quantity: item.quantity, // Quantity
+          approved: item.status === "Approved", // Approval status based on item status
+        })),
+      };
+    });
+
+    res.status(200).json({ reports: formattedReports });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error. Could not fetch reports." });
+  }
+};
+
+
 export {
   createRequestForm,
   getRequestForms,
@@ -220,4 +256,5 @@ export {
   getRequestFormsForAuthority,
   getDepartmentReportsForFic,
   updateStatus,
+  getDepartmentReportsForAuthoritys
 };
