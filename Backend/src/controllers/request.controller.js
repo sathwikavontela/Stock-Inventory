@@ -113,13 +113,11 @@ const getRequestsForDepartments = async (req, res) => {
 
 const getDepartmentReportsForFic = async (req, res) => {
   const { id } = req.params; // Get department ID from route params
-
   try {
     // Fetch reports from the database, including only the necessary fields
     const reports = await RequestForm.find({ userId: id })
-      .select("items status createdAt") // Select only the 'items' and 'status' fields
+      .select("items status createdAt name") // Select only the 'items' and 'status' fields
       .lean(); // .lean() returns plain JavaScript objects for better performance
-    console.log(reports);
 
     if (!reports || reports.length === 0) {
       return res
@@ -210,15 +208,15 @@ const updateStatus = async (req, res) => {
   }
 };
 
-
 const getDepartmentReportsForAuthoritys = async (req, res) => {
   const { departmentId } = req.params; // Get department ID from route params
   console.log("got the request with the params", departmentId);
   try {
     // Fetch reports from the database, including only the necessary fields
     const reports = await RequestForm.find({ userId: departmentId })
-      .select("items status") // Select only the 'items' and 'status' fields
+      .select("items status createdAt") // Select only the 'items' and 'status' fields
       .lean(); // .lean() returns plain JavaScript objects for better performance
+    //console.log(reports);
 
     if (!reports || reports.length === 0) {
       return res
@@ -230,6 +228,7 @@ const getDepartmentReportsForAuthoritys = async (req, res) => {
     const formattedReports = reports.map((report) => {
       return {
         status: report.status,
+        createdAt: report.createdAt,
         items: report.items.map((item) => ({
           itemName: item.item, // Item name
           quantity: item.quantity, // Quantity
@@ -245,7 +244,6 @@ const getDepartmentReportsForAuthoritys = async (req, res) => {
   }
 };
 
-
 export {
   createRequestForm,
   getRequestForms,
@@ -256,5 +254,5 @@ export {
   getRequestFormsForAuthority,
   getDepartmentReportsForFic,
   updateStatus,
-  getDepartmentReportsForAuthoritys
+  getDepartmentReportsForAuthoritys,
 };

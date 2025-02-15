@@ -24,9 +24,11 @@ const FICHeader = () => {
       // Optional: Clear any additional state or storage
       Cookies.remove("Fic_jwt_token");
       localStorage.removeItem("fic");
-      document.cookie= "ficToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; Secure; SameSite=None";
+      document.cookie =
+        "ficToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; Secure; SameSite=None";
       localStorage.removeItem("ficSession");
-      document.cookie= "ficToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; Secure; SameSite=None";
+      document.cookie =
+        "ficToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; Secure; SameSite=None";
 
       // Redirect the user to the login page or homepage
       navigate("/");

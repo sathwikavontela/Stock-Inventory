@@ -15,8 +15,10 @@ const AuthorityDeptReports = () => {
 
   useEffect(() => {
     const fetchReports = async () => {
-        try {
-          console.log("making the request for the detailed department information");
+      try {
+        console.log(
+          "making the request for the detailed department information"
+        );
         const response = await fetch(
           `${BASE_URL}/api/v1/requests/getRequestsByDepartmentForAuthority/${departmentId}`,
           { credentials: "include" }
@@ -79,9 +81,10 @@ const AuthorityDeptReports = () => {
     return {
       series: Object.values(itemCounts),
       options: {
-        chart: { type: "pie" },
+        chart: { type: "pie", width: 400, height: 400 }, // Adjusted size
         labels: Object.keys(itemCounts),
         title: { text: "Item Distribution by Quantity", align: "center" },
+        legend: { position: "bottom", fontSize: "12px" }, // Adjust legend size
       },
     };
   };
@@ -146,12 +149,16 @@ const AuthorityDeptReports = () => {
           )}
         </tbody>
       </table>
-      <div className="mt-6">
-        <ReactApexChart
-          options={pieChartData.options}
-          series={pieChartData.series}
-          type="pie"
-        />
+      <div className="mt-6 flex justify-center">
+        <div className="w-[200px] h-[200px] flex justify-center ">
+          <ReactApexChart
+            options={pieChartData.options}
+            series={pieChartData.series}
+            type="pie"
+            width={500}
+            height={500}
+          />
+        </div>
       </div>
     </div>
   );

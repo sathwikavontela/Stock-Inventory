@@ -80,9 +80,10 @@ const FICDeptReports = () => {
     return {
       series: Object.values(itemCounts),
       options: {
-        chart: { type: "pie" },
+        chart: { type: "pie", width: 400, height: 400 }, // Adjusted size
         labels: Object.keys(itemCounts),
         title: { text: "Item Distribution by Quantity", align: "center" },
+        legend: { position: "bottom", fontSize: "12px" }, // Adjust legend size
       },
     };
   };
@@ -94,9 +95,6 @@ const FICDeptReports = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-xl font-bold mb-4">
-        Reports for Department: {deptId}
-      </h2>
       <div className="mb-4">
         <input
           type="date"
@@ -147,12 +145,16 @@ const FICDeptReports = () => {
           )}
         </tbody>
       </table>
-      <div className="mt-6">
-        <ReactApexChart
-          options={pieChartData.options}
-          series={pieChartData.series}
-          type="pie"
-        />
+      <div className="mt-6 flex justify-center">
+        <div className="w-[200px] h-[200px] flex justify-center ">
+          <ReactApexChart
+            options={pieChartData.options}
+            series={pieChartData.series}
+            type="pie"
+            width={500}
+            height={500}
+          />
+        </div>
       </div>
     </div>
   );
